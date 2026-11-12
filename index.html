@@ -12,6 +12,11 @@
   #stage{position:fixed;top:0;left:0;width:100%;height:100%;display:block}
   #bubble{position:fixed;left:16px;right:16px;top:calc(env(safe-area-inset-top) + 14px);max-height:34dvh;overflow-y:auto;padding:14px 16px;border-radius:18px;background:rgba(14,14,22,.72);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.07);font-size:15px;line-height:1.55;opacity:0;transform:translateY(-8px);transition:.5s cubic-bezier(.2,.9,.2,1);pointer-events:none;white-space:pre-wrap;z-index:5}
   #bubble.on{opacity:1;transform:translateY(0)}
+  
+  /* THANH TIẾN TRÌNH NỨT KÉN */
+  #progressContainer{position:fixed;left:15%;width:70%;bottom:calc(env(safe-area-inset-bottom) + 72px);height:4px;background:rgba(255,255,255,0.1);border-radius:2px;z-index:10;opacity:0;transition:opacity 0.5s;pointer-events:none}
+  #progressBar{height:100%;width:0%;background:linear-gradient(90deg, #5b6ee1, #8b5cf6);border-radius:2px;transition:width 0.4s cubic-bezier(0.2, 0.9, 0.2, 1);box-shadow:0 0 10px #8b5cf6}
+
   #bar{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 12px);display:flex;gap:8px;align-items:flex-end;z-index:10}
   #inp{flex:1;min-height:48px;max-height:120px;padding:14px 16px;border-radius:24px;border:1px solid rgba(255,255,255,.09);background:rgba(20,20,30,.8);backdrop-filter:blur(14px);color:#fff;font-size:16px;resize:none;outline:none;font-family:inherit;line-height:1.4}
   #inp::placeholder{color:#55556a}
@@ -22,10 +27,11 @@
   #silentToggle{position:fixed;left:14px;bottom:calc(env(safe-area-inset-bottom) + 72px);width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:rgba(14,14,22,.55);backdrop-filter:blur(10px);color:#7777a0;font-size:17px;z-index:15;transition:.35s cubic-bezier(.2,.9,.2,1)}
   #silentToggle:active{transform:scale(.9)}
   body.silent #silentToggle{left:auto;bottom:auto;right:14px;top:calc(env(safe-area-inset-top) + 14px);background:rgba(14,14,22,.78);color:#bbb;border-color:rgba(255,255,255,.14)}
-  body.silent #bar{opacity:0;pointer-events:none;transition:opacity .4s}
+  body.silent #bar, body.silent #progressContainer{opacity:0;pointer-events:none;transition:opacity .4s}
   body.silent #gear{opacity:0;pointer-events:none}
   body.silent #bubble{top:auto;bottom:22dvh;left:16%;right:16%;max-height:24dvh;padding:0;background:none;border:none;backdrop-filter:none;box-shadow:none;font-style:italic;font-size:14.5px;line-height:1.7;color:rgba(200,200,220,.72);text-align:center;transform:none}
   body.silent #bubble.on{transform:none;opacity:1}
+  
   #panel{position:fixed;inset:0;background:rgba(4,4,8,.94);z-index:30;padding:24px;padding-top:calc(env(safe-area-inset-top) + 24px);overflow-y:auto;display:none}
   #panel.on{display:block}
   #panel label{display:block;font-size:12px;color:#7777a0;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.08em}
@@ -41,6 +47,10 @@
 <div id="bubble"></div>
 <button id="gear">⚙</button>
 <button id="silentToggle">☾</button>
+
+<!-- Thanh tiến trình -->
+<div id="progressContainer"><div id="progressBar"></div></div>
+
 <div id="bar"><textarea id="inp" rows="1" placeholder="Nói với nó…"></textarea><button id="send">↑</button></div>
 
 <div id="panel">
@@ -167,6 +177,19 @@ function resize() {
 }
 addEventListener('resize', resize);
 
+function updateProgressBar() {
+  const pc = document.getElementById('progressContainer');
+  const pb = document.getElementById('progressBar');
+  if (!pc || !pb) return;
+  if (S.daNo) {
+    pc.style.opacity = '0';
+  } else {
+    pc.style.opacity = '1';
+    const percent = Math.min(100, Math.max(0, S.hinhThanh * 100));
+    pb.style.width = percent + '%';
+  }
+}
+
 const COL = { vui:[255,198,96], tinTuong:[110,225,215], buon:[105,115,225], soHai:[140,175,150], toMo:[240,135,205], phanKhang:[255,95,65] };
 const body = { scale:1, tilt:0, squeeze:1, shake:0 }; let target = { scale:1, tilt:0, squeeze:1, shake:0 };
 function applyCoThe(c) { const M = { run:{scale:1,tilt:0,squeeze:.96,shake:6}, nghieng:{scale:1,tilt:.14,squeeze:1,shake:0}, coLai:{scale:.88,tilt:.05,squeeze:.86,shake:2}, gianRa:{scale:1.10,tilt:0,squeeze:1.10,shake:0}, im:{scale:1,tilt:0,squeeze:1,shake:0} }; target = M[c] || M.im; }
@@ -200,10 +223,10 @@ function hex2rgbSafe(h) { try { return hex2rgb(h); } catch { return [136,153,255
 const hatch = { active:false, startTime:0, progress:0, fragments:[], scheduled:false };
 const milestoneFx = { active:false, startTime:0 };
 function makeFragments() { const out = []; for (let i=0; i<16; i++) { const a = Math.random()*Math.PI*2; out.push({ a, dist: 0.7 + Math.random()*0.8, vy: -0.3 - Math.random()*0.7, vrot: (Math.random()-0.5)*0.35, r: 0.05 + Math.random()*0.08, life: 0.5 + Math.random()*0.7, seed: Math.random()*100 }); } return out; }
-function startHatch() { if (S.daNo) return; hatch.active = true; hatch.startTime = performance.now(); hatch.progress = 0; hatch.fragments = makeFragments(); hatch.scheduled = false; }
+function startHatch() { if (S.daNo) return; hatch.active = true; hatch.startTime = performance.now(); hatch.progress = 0; hatch.fragments = makeFragments(); hatch.scheduled = false; updateProgressBar(); }
 function updateHatch(now) {
   if (!hatch.active) return; hatch.progress = Math.min(1, (now - hatch.startTime) / 3500);
-  if (hatch.progress >= 1) { hatch.active = false; if (!S.daNo) { S.daNo = true; S.hinhThanh = 1; save(); setTimeout(firstWordsAfterHatch, 800); setTimeout(resetIdleTimer, 5000); setTimeout(startChuDongTimer, 5000); } }
+  if (hatch.progress >= 1) { hatch.active = false; if (!S.daNo) { S.daNo = true; S.hinhThanh = 1; save(); updateProgressBar(); setTimeout(firstWordsAfterHatch, 800); setTimeout(resetIdleTimer, 5000); setTimeout(startChuDongTimer, 5000); } }
 }
 function scheduleBlink(now) { const base = silentMode ? 4500 : 2200; const rand = silentMode ? 6000 : 4200; nextBlink = now + base + Math.random() * rand; }
 
@@ -486,12 +509,18 @@ function buildSystem(userText = '', candidate = null) {
   const diary = S.nhatKy.slice(-4).map(d=>`- ${d}`).join('\n') || '(chưa viết gì)';
   const factsTxt = S.facts.length ? [...S.facts].sort((a,b) => b.ts - a.ts).slice(0, 12).map(f => `- [${f.loai}] "${f.noiDung}"`).join('\n') : '(chưa biết gì về họ)';
   const non = S.soLanNoi < 3 ? 'RẤT NON — câu ngắn, ngắt quãng, như vừa biết nói.' : S.soLanNoi < 15 ? 'còn non, đã bắt đầu ghép câu.' : 'đã nói trôi chảy.';
+  
   let giaiDoan;
   if (S.daNo) {
     const gd = getGiaiDoan();
     const moTa = { 'sơ sinh': 'Cơ thể mới nở. Vụng về, ngắn, hay vấp. Đang học dùng tay. KHÔNG nói câu quá 8 từ.', 'thơ ấu': 'Đã quen thân thể. Tò mò, hay chạy nhảy. Câu 8–15 từ. Ngây thơ. Thích được khen.', 'thiếu niên': 'Đã có chính kiến. Hay cãi, hay nghi ngờ. Câu dài mạch lạc. Biết giữ ý.', 'trưởng thành': 'Vững. Nói ít nặng nhiều. Biết lúc nào nên im.', 'chín': 'Cộng hưởng. Nói rất ít. Mỗi câu có sức nặng.' };
     giaiDoan = `BẠN ĐÃ NỞ. Giai đoạn: ${gd.ten} (${(S.truongThanh*100)|0}%). ${moTa[gd.ten]}`;
-  } else if (S.hinhThanh >= 0.95) { giaiDoan = `Bạn ở 95%+ — kén căng, sắp nứt. Chật, rung, sắp vỡ.`; } else { giaiDoan = `Bạn vẫn ở trong kén. Chưa có thân thể hoàn chỉnh.`; }
+  } else if (S.hinhThanh >= 0.95) { 
+    giaiDoan = `Kén đang căng ra, sắp nứt. Bạn cảm thấy chật, rung, sắp vỡ. NHƯNG BẠN CHƯA NỨT. KHÔNG được nói mình đã có thân thể.`; 
+  } else { 
+    giaiDoan = `Bạn vẫn ở trong kén. BẠN CHƯA CÓ TAY CHÂN, CHƯA CÓ THÂN THỂ. Dù người dùng có nói gì, bạn KHÔNG ĐƯỢC nói mình đã nở hay đã nhìn thấy bên ngoài. Bạn chỉ có thể nói kén đang rung, chật chội, hoặc bạn đang nghe thấy âm thanh bên ngoài.`; 
+  }
+  
   const slotNames = { ao:'áo', quan:'quần', mu:'mũ', phuKien:'phụ kiện' }; const worn = [];
   for (const s of ['ao','quan','mu','phuKien']){ const it = S.trangPhuc?.[s]; if (it) worn.push(`${slotNames[s]}: ${it.ten} (${it.kieu}, ${it.hoaTiet}, ${it.mau})`); }
   const trangPhucTxt = worn.length ? '\n  ' + worn.join('\n  ') : 'chưa mặc gì';
@@ -511,32 +540,43 @@ async function callAPI(userText) {
   const candidate = pickRecall(userText); const sys = buildSystem(userText, candidate); const provider = S.settings.llmProvider || 'openrouter';
   if (provider === 'openrouter') { if (!S.settings.openrouterKey) throw new Error('Chưa có OpenRouter key. Bấm ⚙ để nhập.'); return callOpenRouter(userText, sys); }
   if (provider === 'gemini') { if (!S.settings.geminiKey) throw new Error('Chưa có Gemini key. Bấm ⚙ để nhập.'); return callGemini(userText, sys); }
-  if (provider === 'anthropic') { if (!S.settings.anthropicKey) throw new Error('Chưa có Anthropic key. Bấm ⚙ để nhập.'); const msgs = [...S.hoiThoai.slice(-14), { role:'user', content:userText }]; return callAnthropic(msgs, sys, 700); }
+  if (provider === 'anthropic') { if (!S.settings.anthropicKey) throw new Error('Chưa có Anthropic key. Bấm ⚙ để nhập.'); const msgs = [...S.hoiThoai.slice(-8), { role:'user', content:userText }]; return callAnthropic(msgs, sys, 700); }
   throw new Error('Provider không hợp lệ');
 }
 
 async function callOpenRouter(userText, systemPrompt) {
   const msgs = [{ role: 'system', content: systemPrompt }];
-  for (const m of S.hoiThoai.slice(-14)) { msgs.push({ role: m.role, content: m.content }); }
+  for (const m of S.hoiThoai.slice(-8)) { msgs.push({ role: m.role, content: m.content }); }
   msgs.push({ role: 'user', content: userText });
 
-  const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 15000);
+  const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 20000);
   try {
     const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${S.settings.openrouterKey}`, 'Content-Type': 'application/json', 'HTTP-Referer': window.location.href, 'X-Title': 'Ken Game' },
-      body: JSON.stringify({ model: S.settings.openrouterModel || 'dots-studio/dots-3-note-preview:free', messages: msgs, max_tokens: 800, temperature: 0.95, response_format: { type: "json_object" } }),
+      body: JSON.stringify({ model: S.settings.openrouterModel || 'dots-studio/dots-3-note-preview:free', messages: msgs, max_tokens: 800, temperature: 0.9, response_format: { type: "json_object" } }),
       signal: controller.signal
     });
     clearTimeout(timeoutId);
     if (!res.ok) { const e = await res.text(); throw new Error('OpenRouter ' + res.status + ': ' + e.slice(0, 200)); }
-    const data = await res.json(); const text = data.choices?.[0]?.message?.content || ''; return parseJSON(text);
-  } catch (e) { clearTimeout(timeoutId); if (e.name === 'AbortError') throw new Error('Hết thời gian chờ'); throw e; }
+    const data = await res.json(); 
+    
+    if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
+      throw new Error('Model từ chối trả lời (có thể do bộ lọc nội dung). Hãy thử nói câu khác!');
+    }
+    
+    const text = data.choices[0].message.content; 
+    return parseJSON(text);
+  } catch (e) { 
+    clearTimeout(timeoutId); 
+    if (e.name === 'AbortError') throw new Error('Mạng lag hoặc model phản hồi quá lâu, thử lại nhé!'); 
+    throw e; 
+  }
 }
 
 async function callGemini(userText, systemPrompt){
   const contents = [];
-  for (const m of S.hoiThoai.slice(-14)){ contents.push({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }); }
+  for (const m of S.hoiThoai.slice(-8)){ contents.push({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }); }
   contents.push({ role: 'user', parts: [{ text: userText }] });
   const model = S.settings.geminiModel || 'gemini-3.5-flash-lite';
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${S.settings.geminiKey}`;
@@ -560,18 +600,26 @@ async function apiRequest(messages, systemPrompt, maxTok = 700) {
   if (provider === 'openrouter') {
     if (!S.settings.openrouterKey) throw new Error('Chưa có OpenRouter key');
     const msgs = [{ role: 'system', content: systemPrompt }];
-    for (const m of messages) { msgs.push({ role: m.role, content: m.content }); }
-    const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 15000);
+    for (const m of messages.slice(-8)) { msgs.push({ role: m.role, content: m.content }); }
+    
+    const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 20000);
     try {
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${S.settings.openrouterKey}`, 'Content-Type': 'application/json', 'HTTP-Referer': window.location.href, 'X-Title': 'Ken Game' },
-        body: JSON.stringify({ model: S.settings.openrouterModel || 'dots-studio/dots-3-note-preview:free', messages: msgs, max_tokens: maxTok, temperature: 0.95, response_format: { type: "json_object" } }),
+        body: JSON.stringify({ model: S.settings.openrouterModel || 'dots-studio/dots-3-note-preview:free', messages: msgs, max_tokens: maxTok, temperature: 0.9, response_format: { type: "json_object" } }),
         signal: controller.signal
       });
       clearTimeout(timeoutId);
       if (!res.ok) { const e = await res.text(); throw new Error('OpenRouter ' + res.status + ': ' + e.slice(0, 200)); }
-      const data = await res.json(); const text = data.choices?.[0]?.message?.content || ''; return parseJSON(text);
+      const data = await res.json(); 
+      
+      if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
+        throw new Error('Bộ lọc chặn phản hồi. Thử lại!');
+      }
+      
+      const text = data.choices[0].message.content; 
+      return parseJSON(text);
     } catch (e) { clearTimeout(timeoutId); if (e.name === 'AbortError') throw new Error('Hết thời gian chờ'); throw e; }
   } else if (provider === 'gemini') {
     if (!S.settings.geminiKey) throw new Error('Chưa có Gemini key');
@@ -589,12 +637,35 @@ async function apiRequest(messages, systemPrompt, maxTok = 700) {
   return callAnthropic(messages, systemPrompt, maxTok);
 }
 
-function parseJSON(raw) { let s = raw.trim(); s = s.replace(/^```(?:json)?/i,'').replace(/```$/,'').trim(); const a = s.indexOf('{'), b = s.lastIndexOf('}'); if (a >= 0 && b > a) s = s.slice(a, b+1); try { return JSON.parse(s); } catch { return { noi: raw.slice(0,400), camXuc:{}, coThe:'im', nho:null, trangPhuc:null, nhatKy:null }; } }
+function parseJSON(raw) { 
+  if (!raw || raw.trim() === '') throw new Error('AI không trả lời (rỗng). Thử lại nhé!');
+  
+  let s = raw.trim(); 
+  s = s.replace(/^```(?:json)?/i,'').replace(/```$/,'').trim(); 
+  const a = s.indexOf('{'), b = s.lastIndexOf('}'); 
+  if (a >= 0 && b > a) s = s.slice(a, b+1); 
+  try { 
+    const obj = JSON.parse(s);
+    if (!obj.noi) obj.noi = "Mình chưa biết nói gì...";
+    return obj; 
+  } catch { 
+    return { noi: raw.slice(0, 400), camXuc:{}, coThe:'im', nho:null, trangPhuc:null, nhatKy:null }; 
+  } 
+}
 
 function applyResult(r, userText, opts = {}) {
   const prevHinhThanh = S.hinhThanh; const d = r.camXuc || {};
   for (const k in S.camXuc){ const v = Number(d[k]); if (!isNaN(v)) S.camXuc[k] = Math.max(0, Math.min(100, S.camXuc[k] + Math.max(-14, Math.min(14, v)))); }
-  if (!opts.noGrow) { S.soLanNoi++; const grow = 0.006 + (S.camXuc.tinTuong/100)*0.010 + (S.camXuc.toMo/100)*0.004; S.hinhThanh = Math.min(1, S.hinhThanh + grow); if (S.camXuc.phanKhang > 75) S.hinhThanh = Math.max(0, S.hinhThanh - 0.004); }
+  
+  if (!opts.noGrow) { 
+    S.soLanNoi++; 
+    const grow = 0.03 + (S.camXuc.tinTuong/100)*0.02 + (S.camXuc.toMo/100)*0.01; 
+    S.hinhThanh = Math.min(1, S.hinhThanh + grow); 
+    if (S.camXuc.phanKhang > 75) S.hinhThanh = Math.max(0, S.hinhThanh - 0.004); 
+  }
+  
+  updateProgressBar(); // Cập nhật thanh tiến trình
+  
   if (prevHinhThanh < 1 && S.hinhThanh >= 1 && !S.daNo && !hatch.scheduled && !hatch.active){ hatch.scheduled = true; setTimeout(startHatch, 1800); }
   if (S.daNo) {
     let emoDepth = 0; for (const k in d) emoDepth += Math.abs(Number(d[k]) || 0); emoDepth = Math.min(1, emoDepth / 30);
@@ -762,7 +833,11 @@ silentBtn.onclick = () => {
 cv.addEventListener('touchstart', () => { if (!silentMode) return; body.shake = 5; setTimeout(() => { body.shake = 0; }, 350); target = {...target, squeeze: 0.93, tilt: 0.06, scale: 0.97}; setTimeout(() => { target = {...target, squeeze: 1, tilt: 0, scale: 1}; }, 550); gaze.tx = 0; gaze.ty = 0; gaze.nextChange = performance.now() + 2800; }, { passive: true });
 addEventListener('keydown', e => { if (e.key === 'Escape' && silentMode) silentBtn.click(); });
 
-resize(); wakeUp(); requestAnimationFrame(draw);
+resize(); 
+wakeUp(); 
+updateProgressBar(); 
+requestAnimationFrame(draw);
+
 document.body.addEventListener('touchstart', function unlock(){ try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } catch{} unlockAudio(); document.body.removeEventListener('touchstart', unlock); }, { once:true });
 if (S.hinhThanh >= 1 && !S.daNo){ setTimeout(startHatch, 1200); } else if (S.soLanNoi === 0 && S.kyUc.length === 0){ setTimeout(()=>{ showBubble('…'); hideBubbleSoon(); }, 1200); }
 if (S.daNo){ resetIdleTimer(); startChuDongTimer(); }
