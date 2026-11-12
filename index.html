@@ -88,11 +88,12 @@
     <label>Gemini API key</label>
     <input id="geminiKey" type="password" placeholder="AIza..." autocomplete="off">
     <label>Model Gemini</label>
-    <select id="geminiModel">
-      <option value="gemini-3.8-flash">Gemini 3.8 Flash</option>
-      <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite</option>
-      <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-    </select>
+   <select id="geminiModel">
+  <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite (Khuyên dùng)</option>
+  <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
+  <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite</option>
+  <option value="gemini-3.8-flash">Gemini 3.8 Flash (Có thể quá tải)</option>
+</select>
     <div style="font-size:11px;color:#666680;margin-top:8px;line-height:1.6">
       Key miễn phí: <b style="color:#8b8bff">aistudio.google.com/apikey</b>
     </div>
@@ -1762,6 +1763,47 @@ async function callGemini(userText, systemPrompt){
   }
   contents.push({ role: 'user', parts: [{ text: userText }] });
 
+  const model = S.settings.geminiModel || 'gemini-3.5-flash-lite';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${S.settings.geminiKey}`;
+
+  // Cơ chế tự động ngắt sau 15 giây
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents,
+        generationConfig: {
+          response_mime_type: 'application/json',
+          maxOutputTokens: 1024,
+          temperature: 0.95
+        }
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    if (!res.ok){
+      const e = await res.text();
+      throw new Error('Server đang bận (Mã ' + res.status + '). Thử lại sau nhé!');
+    }
+    const data = await res.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    return parseJSON(text);
+  } catch (e) {
+    clearTimeout(timeoutId);
+    if (e.name === 'AbortError') {
+      throw new Error('Google phản hồi quá lâu, vui lòng thử lại!');
+    }
+    throw e;
+  }
+}
+  contents.push({ role: 'user', parts: [{ text: userText }] });
+
   const model = S.settings.geminiModel || 'gemini-3.8-flash';
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${S.settings.geminiKey}`;
 
@@ -1822,7 +1864,7 @@ async function apiRequest(messages, systemPrompt, maxTok = 700){
       role: m.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: m.content }]
     }));
-    const model = S.settings.geminiModel || 'gemini-3.8-flash';
+    const model = S.settings.geminiModel || 'gemini-3.5-flash-lite';
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${S.settings.geminiKey}`;
     const res = await fetch(url, {
       method: 'POST',
@@ -2108,7 +2150,7 @@ function syncProviderUI(){
 document.getElementById('gear').onclick = ()=>{
   document.getElementById('llmProvider').value = S.settings.llmProvider || 'gemini';
   document.getElementById('geminiKey').value = S.settings.geminiKey || '';
-  document.getElementById('geminiModel').value = S.settings.geminiModel || 'gemini-3.8-flash';
+  document.getElementById('geminiModel').value = S.settings.geminiModel || 'gemini-3.5-flash-lite';
   document.getElementById('anthropicKey').value = S.settings.anthropicKey || '';
   document.getElementById('anthropicModel').value = S.settings.anthropicModel || 'claude-sonnet-4-5';
   document.getElementById('v').value = S.settings.voice;
