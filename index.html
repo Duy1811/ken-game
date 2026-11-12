@@ -59,9 +59,9 @@
     <input id="openrouterKey" type="password" placeholder="sk-or-v1-..." autocomplete="off">
     <label>Model OpenRouter</label>
     <select id="openrouterModel">
-      <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (Tiếng Việt tốt)</option>
-      <option value="qwen/qwen-2.5-72b-instruct:free">Qwen 2.5 72B (Rất thông minh)</option>
-      <option value="google/gemma-2-9b-it:free">Gemma 2 9B (Nhanh)</option>
+      <option value="dots-studio/dots-3-note-preview:free">Dots 3 Note (Ổn định nhất)</option>
+      <option value="nvidia/nemotron-3-ultra-550b-a55b:free">Nemotron 3 Ultra (Rất thông minh)</option>
+      <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (Dự phòng)</option>
     </select>
     <div style="font-size:11px;color:#666680;margin-top:8px;line-height:1.6">Lấy key: <b style="color:#8b8bff">openrouter.ai/keys</b></div>
   </div>
@@ -116,7 +116,7 @@ const DEF = () => ({
   hoiNguoc: { turnCount:0, missStreak:0, dangChoTraLoi:false, lastAskedAt:0 }, trangPhuc: null, tuDo: [], hoiThoai: [], lanCuoi: Date.now(),
   settings: { 
     llmProvider: 'openrouter', 
-    openrouterKey: '', openrouterModel: 'meta-llama/llama-3.3-70b-instruct:free',
+    openrouterKey: '', openrouterModel: 'dots-studio/dots-3-note-preview:free',
     geminiKey: '', geminiModel: 'gemini-3.5-flash-lite', 
     anthropicKey: '', anthropicModel: 'claude-sonnet-4-5', 
     voice: '1' 
@@ -137,7 +137,7 @@ if (!S.hoiNguoc || typeof S.hoiNguoc !== 'object') S.hoiNguoc = { turnCount:0, m
 if (!Array.isArray(S.tuDo)) S.tuDo = [];
 if (!S.settings.llmProvider) S.settings.llmProvider = 'openrouter';
 if (S.settings.openrouterKey === undefined) S.settings.openrouterKey = '';
-if (!S.settings.openrouterModel) S.settings.openrouterModel = 'meta-llama/llama-3.3-70b-instruct:free';
+if (!S.settings.openrouterModel || S.settings.openrouterModel === 'google/gemma-2-9b-it:free') S.settings.openrouterModel = 'dots-studio/dots-3-note-preview:free';
 if (S.settings.geminiKey === undefined) S.settings.geminiKey = '';
 if (!S.settings.geminiModel) S.settings.geminiModel = 'gemini-3.5-flash-lite';
 if (S.settings.anthropicKey === undefined) S.settings.anthropicKey = '';
@@ -525,7 +525,7 @@ async function callOpenRouter(userText, systemPrompt) {
     const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${S.settings.openrouterKey}`, 'Content-Type': 'application/json', 'HTTP-Referer': window.location.href, 'X-Title': 'Ken Game' },
-      body: JSON.stringify({ model: S.settings.openrouterModel || 'meta-llama/llama-3.3-70b-instruct:free', messages: msgs, max_tokens: 800, temperature: 0.95, response_format: { type: "json_object" } }),
+      body: JSON.stringify({ model: S.settings.openrouterModel || 'dots-studio/dots-3-note-preview:free', messages: msgs, max_tokens: 800, temperature: 0.95, response_format: { type: "json_object" } }),
       signal: controller.signal
     });
     clearTimeout(timeoutId);
@@ -566,7 +566,7 @@ async function apiRequest(messages, systemPrompt, maxTok = 700) {
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${S.settings.openrouterKey}`, 'Content-Type': 'application/json', 'HTTP-Referer': window.location.href, 'X-Title': 'Ken Game' },
-        body: JSON.stringify({ model: S.settings.openrouterModel || 'meta-llama/llama-3.3-70b-instruct:free', messages: msgs, max_tokens: maxTok, temperature: 0.95, response_format: { type: "json_object" } }),
+        body: JSON.stringify({ model: S.settings.openrouterModel || 'dots-studio/dots-3-note-preview:free', messages: msgs, max_tokens: maxTok, temperature: 0.95, response_format: { type: "json_object" } }),
         signal: controller.signal
       });
       clearTimeout(timeoutId);
@@ -674,7 +674,7 @@ function syncProviderUI() {
 document.getElementById('gear').onclick = ()=>{
   document.getElementById('llmProvider').value = S.settings.llmProvider || 'openrouter';
   document.getElementById('openrouterKey').value = S.settings.openrouterKey || '';
-  document.getElementById('openrouterModel').value = S.settings.openrouterModel || 'meta-llama/llama-3.3-70b-instruct:free';
+  document.getElementById('openrouterModel').value = S.settings.openrouterModel || 'dots-studio/dots-3-note-preview:free';
   document.getElementById('geminiKey').value = S.settings.geminiKey || '';
   document.getElementById('geminiModel').value = S.settings.geminiModel || 'gemini-3.5-flash-lite';
   document.getElementById('anthropicKey').value = S.settings.anthropicKey || '';
