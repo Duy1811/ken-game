@@ -10,7 +10,7 @@
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100dvh;overflow:hidden;background:#06060a;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e8e8f0}
-  #stage{position:fixed;top:0;left:0;width:100vw;height:100dvh;display:block}
+  #stage{position:fixed;top:0;left:0;width:100%;height:100%;display:block}
   #bubble{position:fixed;left:16px;right:16px;top:calc(env(safe-area-inset-top) + 14px);
     max-height:34dvh;overflow-y:auto;padding:14px 16px;border-radius:18px;
     background:rgba(14,14,22,.72);backdrop-filter:blur(14px);
@@ -258,13 +258,14 @@ const cv = document.getElementById('stage');
 const ctx = cv.getContext('2d');
 let W, H, DPR;
 function resize() {
-  DPR = Math.min(devicePixelRatio||1, 2.5);
-  W = window.innerWidth; H = window.innerHeight;
-  cv.width = W*DPR; cv.height = H*DPR;
+  DPR = Math.min(devicePixelRatio || 1, 2.5);
+  W = window.innerWidth;
+  H = window.innerHeight;
+  cv.width = W * DPR;
+  cv.height = H * DPR;
   cv.style.width = W + 'px';
   cv.style.height = H + 'px';
-  ctx.setTransform(DPR,0,0,DPR,0,0);
-}
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 }
 addEventListener('resize', resize);
 
