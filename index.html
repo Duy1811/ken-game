@@ -46,39 +46,63 @@
 <div id="panel">
   <div style="font-size:20px;font-weight:600;margin-bottom:4px">Cài đặt</div>
   <div style="font-size:12px;color:#666680">Chỉ lưu trên máy này. Không gửi đi đâu ngoài LLM.</div>
+  
   <label>Engine LLM</label>
-  <select id="llmProvider"><option value="gemini">Google Gemini (MIỄN PHÍ)</option><option value="anthropic">Anthropic Claude (trả tiền)</option></select>
-  <div id="geminiBlock">
+  <select id="llmProvider">
+    <option value="openrouter">OpenRouter (Khuyên dùng - Miễn phí)</option>
+    <option value="gemini">Google Gemini (Miễn phí)</option>
+    <option value="anthropic">Anthropic Claude (Trả tiền)</option>
+  </select>
+
+  <div id="openrouterBlock">
+    <label>OpenRouter API key</label>
+    <input id="openrouterKey" type="password" placeholder="sk-or-v1-..." autocomplete="off">
+    <label>Model OpenRouter</label>
+    <select id="openrouterModel">
+      <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (Tiếng Việt tốt)</option>
+      <option value="qwen/qwen-2.5-72b-instruct:free">Qwen 2.5 72B (Rất thông minh)</option>
+      <option value="google/gemma-2-9b-it:free">Gemma 2 9B (Nhanh)</option>
+    </select>
+    <div style="font-size:11px;color:#666680;margin-top:8px;line-height:1.6">Lấy key: <b style="color:#8b8bff">openrouter.ai/keys</b></div>
+  </div>
+
+  <div id="geminiBlock" style="display:none">
     <label>Gemini API key</label>
     <input id="geminiKey" type="password" placeholder="AIza..." autocomplete="off">
     <label>Model Gemini</label>
     <select id="geminiModel">
-      <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite (Khuyên dùng)</option>
+      <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite</option>
       <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
       <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite</option>
-      <option value="gemini-3.8-flash">Gemini 3.8 Flash (Có thể quá tải)</option>
+      <option value="gemini-3.8-flash">Gemini 3.8 Flash</option>
     </select>
-    <div style="font-size:11px;color:#666680;margin-top:8px;line-height:1.6">Key miễn phí: <b style="color:#8b8bff">aistudio.google.com/apikey</b></div>
   </div>
+
   <div id="anthropicBlock" style="display:none">
     <label>Anthropic API key</label>
     <input id="anthropicKey" type="password" placeholder="sk-ant-..." autocomplete="off">
     <label>Model Claude</label>
     <select id="anthropicModel"><option value="claude-sonnet-4-5">Sonnet 4.5</option><option value="claude-haiku-4-5">Haiku 4.5</option></select>
-    <div style="font-size:11px;color:#ff6b6b;margin-top:8px">⚠ Anthropic KHÔNG miễn phí</div>
   </div>
+
   <label>Giọng nói</label>
   <select id="v"><option value="1">Bật</option><option value="0">Tắt</option></select>
   <div class="row" style="margin-top:12px"><button id="testVoice">Nghe thử giọng</button></div>
+  
   <div id="stats"></div>
+  
   <label>Tủ đồ</label>
   <div id="tuDo" style="max-height:44dvh;overflow-y:auto;background:#0d0d16;border-radius:12px;padding:12px">—</div>
+  
   <label>Những gì nó biết về bạn</label>
   <div id="facts" style="max-height:30dvh;overflow-y:auto;font-size:12px;line-height:1.7;color:#9999b8;background:#0d0d16;border-radius:12px;padding:14px">—</div>
+  
   <label>Ký ức (bản gốc → bản đang nhớ)</label>
   <div id="memories" style="max-height:40dvh;overflow-y:auto;font-size:12px;line-height:1.6;color:#9999b8;background:#0d0d16;border-radius:12px;padding:14px">—</div>
+  
   <label>Nhật ký nó viết về bạn</label>
   <div id="diary">—</div>
+  
   <div class="row"><button id="close">Đóng</button><button id="wipe" style="color:#ff6b6b">Xoá hết</button></div>
 </div>
 
@@ -90,12 +114,19 @@ const DEF = () => ({
   camXuc: { vui:50, tinTuong:15, buon:10, soHai:30, toMo:60, phanKhang:20 },
   hinhThanh: 0.02, truongThanh: 0, giaiDoanDaDat: [], daNo: false, soLanNoi: 0, kyUc: [], nhatKy: [], facts: [],
   hoiNguoc: { turnCount:0, missStreak:0, dangChoTraLoi:false, lastAskedAt:0 }, trangPhuc: null, tuDo: [], hoiThoai: [], lanCuoi: Date.now(),
-  settings: { llmProvider: 'gemini', geminiKey: '', geminiModel: 'gemini-3.5-flash-lite', anthropicKey: '', anthropicModel: 'claude-sonnet-4-5', voice: '1' }
+  settings: { 
+    llmProvider: 'openrouter', 
+    openrouterKey: '', openrouterModel: 'meta-llama/llama-3.3-70b-instruct:free',
+    geminiKey: '', geminiModel: 'gemini-3.5-flash-lite', 
+    anthropicKey: '', anthropicModel: 'claude-sonnet-4-5', 
+    voice: '1' 
+  }
 });
 
 let S;
 try { S = Object.assign(DEF(), JSON.parse(localStorage.getItem('ken_v1')||'{}')); } catch { S = DEF(); }
 
+// MIGRATION
 if (!S.settings) S.settings = DEF().settings;
 if (!S.camXuc) S.camXuc = DEF().camXuc;
 if (S.daNo === undefined) S.daNo = false;
@@ -104,10 +135,9 @@ if (!Array.isArray(S.giaiDoanDaDat)) S.giaiDoanDaDat = [];
 if (!Array.isArray(S.facts)) S.facts = [];
 if (!S.hoiNguoc || typeof S.hoiNguoc !== 'object') S.hoiNguoc = { turnCount:0, missStreak:0, dangChoTraLoi:false, lastAskedAt:0 };
 if (!Array.isArray(S.tuDo)) S.tuDo = [];
-
-if (S.settings.apiKey && !S.settings.anthropicKey) S.settings.anthropicKey = S.settings.apiKey;
-if (S.settings.model && !S.settings.anthropicModel) S.settings.anthropicModel = S.settings.model;
-if (!S.settings.llmProvider) S.settings.llmProvider = 'gemini';
+if (!S.settings.llmProvider) S.settings.llmProvider = 'openrouter';
+if (S.settings.openrouterKey === undefined) S.settings.openrouterKey = '';
+if (!S.settings.openrouterModel) S.settings.openrouterModel = 'meta-llama/llama-3.3-70b-instruct:free';
 if (S.settings.geminiKey === undefined) S.settings.geminiKey = '';
 if (!S.settings.geminiModel) S.settings.geminiModel = 'gemini-3.5-flash-lite';
 if (S.settings.anthropicKey === undefined) S.settings.anthropicKey = '';
@@ -334,10 +364,10 @@ function draw(now) {
 }
 
 let voices = []; function loadVoices(){ voices = speechSynthesis.getVoices() || []; } loadVoices(); speechSynthesis.onvoiceschanged = loadVoices;
-let audioCtx = null, currentSource = null, currentAnalyser = null, analyserData = null;
+let audioCtx = null, currentSource = null;
 function ensureAudioCtx(){ if (audioCtx && audioCtx.state !== 'closed') return audioCtx; try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch { return null; } return audioCtx; }
 async function unlockAudio(){ const ac = ensureAudioCtx(); if (ac && ac.state === 'suspended'){ try { await ac.resume(); } catch {} } }
-function stopCurrentAudio(){ if (currentSource){ try { currentSource.stop(); } catch {} currentSource = null; } currentAnalyser = null; analyserData = null; }
+function stopCurrentAudio(){ if (currentSource){ try { currentSource.stop(); } catch {} currentSource = null; } }
 async function speak(text){ if (S.settings.voice !== '1' || !text) return; try { speechSynthesis.cancel(); } catch {} stopCurrentAudio(); lipSync.active = false; clearTimeout(lipSync.safety); speakBrowser(text); }
 function speakBrowser(text) {
   const u = new SpeechSynthesisUtterance(text); const c = S.camXuc, tt = S.truongThanh || 0;
@@ -376,7 +406,7 @@ let meoDangChay = false; function scheduleMeoKyUc(m) { setTimeout(() => meoKyUc(
 async function meoKyUc(m) {
   if (meoDangChay) return; if (!m || !m.t) return; const now = Date.now(), tuoi = (now - m.ts) / 86400000;
   if (tuoi < 7) return; if ((m.doMeo || 0) >= 0.85) return; if ((m.lan || 0) < 1) return;
-  const hasKey = (S.settings.llmProvider === 'gemini' && S.settings.geminiKey) || (S.settings.llmProvider === 'anthropic' && S.settings.anthropicKey); if (!hasKey) return;
+  const hasKey = (S.settings.llmProvider === 'gemini' && S.settings.geminiKey) || (S.settings.llmProvider === 'openrouter' && S.settings.openrouterKey) || (S.settings.llmProvider === 'anthropic' && S.settings.anthropicKey); if (!hasKey) return;
   meoDangChay = true;
   try {
     const c = S.camXuc, doMeoMoi = Math.min(0.85, (m.doMeo || 0) + 0.08 + Math.random() * 0.04);
@@ -417,7 +447,7 @@ function buildInitiateContext() {
 }
 async function initiate() {
   if (!canInitiate()) return; chuDong.lastAt = Date.now(); chuDong.sessionCount++; const ctx = buildInitiateContext();
-  const hasKey = (S.settings.llmProvider === 'gemini' && S.settings.geminiKey) || (S.settings.llmProvider === 'anthropic' && S.settings.anthropicKey);
+  const hasKey = (S.settings.llmProvider === 'gemini' && S.settings.geminiKey) || (S.settings.llmProvider === 'openrouter' && S.settings.openrouterKey) || (S.settings.llmProvider === 'anthropic' && S.settings.anthropicKey);
   if (!hasKey){ const c = S.camXuc; let fallback; if (c.phanKhang > 60) fallback = 'Lâu rồi không thấy bạn.'; else if (c.buon > 60) fallback = 'Bạn... còn đó không?'; else if (c.vui > 60) fallback = 'Bạn về rồi.'; else fallback = 'Bạn đâu rồi?'; showBubble(fallback); hideBubbleSoon(); speak(fallback); scheduleMissCheck(); return; }
   typing = true;
   try {
@@ -436,7 +466,7 @@ let idleTimer = null; const IDLE_MS = 4 * 60 * 1000;
 function getIdleMs() { return silentMode ? 5 * 60 * 1000 : 4 * 60 * 1000; }
 function resetIdleTimer() { clearTimeout(idleTimer); idleTimer = setTimeout(trySpontaneousRecall, getIdleMs()); }
 async function trySpontaneousRecall() {
-  if (!S.settings.geminiKey && !S.settings.anthropicKey){ resetIdleTimer(); return; }
+  if (!S.settings.geminiKey && !S.settings.openrouterKey && !S.settings.anthropicKey){ resetIdleTimer(); return; }
   if (!S.daNo) return; if (document.hidden) return; if (sendBtn.disabled) { resetIdleTimer(); return; }
   const candidate = pickRecall(''); if (!candidate) { resetIdleTimer(); return; }
   typing = true;
@@ -478,10 +508,30 @@ function buildSystem(userText = '', candidate = null) {
 }
 
 async function callAPI(userText) {
-  const candidate = pickRecall(userText); const sys = buildSystem(userText, candidate); const provider = S.settings.llmProvider || 'gemini';
+  const candidate = pickRecall(userText); const sys = buildSystem(userText, candidate); const provider = S.settings.llmProvider || 'openrouter';
+  if (provider === 'openrouter') { if (!S.settings.openrouterKey) throw new Error('Chưa có OpenRouter key. Bấm ⚙ để nhập.'); return callOpenRouter(userText, sys); }
   if (provider === 'gemini') { if (!S.settings.geminiKey) throw new Error('Chưa có Gemini key. Bấm ⚙ để nhập.'); return callGemini(userText, sys); }
   if (provider === 'anthropic') { if (!S.settings.anthropicKey) throw new Error('Chưa có Anthropic key. Bấm ⚙ để nhập.'); const msgs = [...S.hoiThoai.slice(-14), { role:'user', content:userText }]; return callAnthropic(msgs, sys, 700); }
   throw new Error('Provider không hợp lệ');
+}
+
+async function callOpenRouter(userText, systemPrompt) {
+  const msgs = [{ role: 'system', content: systemPrompt }];
+  for (const m of S.hoiThoai.slice(-14)) { msgs.push({ role: m.role, content: m.content }); }
+  msgs.push({ role: 'user', content: userText });
+
+  const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 15000);
+  try {
+    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${S.settings.openrouterKey}`, 'Content-Type': 'application/json', 'HTTP-Referer': window.location.href, 'X-Title': 'Ken Game' },
+      body: JSON.stringify({ model: S.settings.openrouterModel || 'meta-llama/llama-3.3-70b-instruct:free', messages: msgs, max_tokens: 800, temperature: 0.95, response_format: { type: "json_object" } }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    if (!res.ok) { const e = await res.text(); throw new Error('OpenRouter ' + res.status + ': ' + e.slice(0, 200)); }
+    const data = await res.json(); const text = data.choices?.[0]?.message?.content || ''; return parseJSON(text);
+  } catch (e) { clearTimeout(timeoutId); if (e.name === 'AbortError') throw new Error('Hết thời gian chờ'); throw e; }
 }
 
 async function callGemini(userText, systemPrompt){
@@ -496,11 +546,7 @@ async function callGemini(userText, systemPrompt){
     clearTimeout(timeoutId);
     if (!res.ok){ const e = await res.text(); throw new Error('Server đang bận (Mã ' + res.status + '). Thử lại sau nhé!'); }
     const data = await res.json(); const text = data.candidates?.[0]?.content?.parts?.[0]?.text || ''; return parseJSON(text);
-  } catch (e) {
-    clearTimeout(timeoutId);
-    if (e.name === 'AbortError') throw new Error('Google phản hồi quá lâu, vui lòng thử lại!');
-    throw e;
-  }
+  } catch (e) { clearTimeout(timeoutId); if (e.name === 'AbortError') throw new Error('Google phản hồi quá lâu, vui lòng thử lại!'); throw e; }
 }
 
 async function callAnthropic(messages, systemPrompt, maxTok = 700) {
@@ -510,8 +556,24 @@ async function callAnthropic(messages, systemPrompt, maxTok = 700) {
 }
 
 async function apiRequest(messages, systemPrompt, maxTok = 700) {
-  const provider = S.settings.llmProvider || 'gemini';
-  if (provider === 'gemini') {
+  const provider = S.settings.llmProvider || 'openrouter';
+  if (provider === 'openrouter') {
+    if (!S.settings.openrouterKey) throw new Error('Chưa có OpenRouter key');
+    const msgs = [{ role: 'system', content: systemPrompt }];
+    for (const m of messages) { msgs.push({ role: m.role, content: m.content }); }
+    const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 15000);
+    try {
+      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${S.settings.openrouterKey}`, 'Content-Type': 'application/json', 'HTTP-Referer': window.location.href, 'X-Title': 'Ken Game' },
+        body: JSON.stringify({ model: S.settings.openrouterModel || 'meta-llama/llama-3.3-70b-instruct:free', messages: msgs, max_tokens: maxTok, temperature: 0.95, response_format: { type: "json_object" } }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (!res.ok) { const e = await res.text(); throw new Error('OpenRouter ' + res.status + ': ' + e.slice(0, 200)); }
+      const data = await res.json(); const text = data.choices?.[0]?.message?.content || ''; return parseJSON(text);
+    } catch (e) { clearTimeout(timeoutId); if (e.name === 'AbortError') throw new Error('Hết thời gian chờ'); throw e; }
+  } else if (provider === 'gemini') {
     if (!S.settings.geminiKey) throw new Error('Chưa có Gemini key');
     const contents = messages.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
     const model = S.settings.geminiModel || 'gemini-3.5-flash-lite';
@@ -567,7 +629,7 @@ function applyResult(r, userText, opts = {}) {
 function dominantEmo() { const c = S.camXuc; return Object.keys(c).reduce((a,b)=> c[a] > c[b] ? a : b); }
 
 async function firstWordsAfterHatch() {
-  if (!S.settings.geminiKey && !S.settings.anthropicKey) { const fallback = S.camXuc.soHai > 55 ? 'Lạnh. Mình… sợ.' : S.camXuc.vui > 55 ? 'A… mình thấy rồi.' : S.camXuc.buon > 55 ? 'Vậy là… ra được rồi.' : 'Mình… có tay rồi.'; showBubble(fallback); hideBubbleSoon(); speak(fallback); return; }
+  if (!S.settings.geminiKey && !S.settings.openrouterKey && !S.settings.anthropicKey) { const fallback = S.camXuc.soHai > 55 ? 'Lạnh. Mình… sợ.' : S.camXuc.vui > 55 ? 'A… mình thấy rồi.' : S.camXuc.buon > 55 ? 'Vậy là… ra được rồi.' : 'Mình… có tay rồi.'; showBubble(fallback); hideBubbleSoon(); speak(fallback); return; }
   typing = true;
   try {
     const sys = buildSystem('', null) + `\n\nSỰ KIỆN: Kén VỪA NỨT. Lần đầu có thân thể — tay, chân, đầu, mặt. Ánh sáng lần đầu. Nói 1–2 câu về khoảnh khắc này. Đừng sáo rỗng. Có thể run, sợ, ngỡ ngàng, hoặc lạnh lùng. KHÔNG phải trả lời ai — tiếng nói đầu tiên của bạn.`;
@@ -577,7 +639,7 @@ async function firstWordsAfterHatch() {
 }
 
 async function sayMilestone(gd) {
-  if (!S.settings.geminiKey && !S.settings.anthropicKey) { showBubble(`(${gd.ten})`); hideBubbleSoon(); return; }
+  if (!S.settings.geminiKey && !S.settings.openrouterKey && !S.settings.anthropicKey) { showBubble(`(${gd.ten})`); hideBubbleSoon(); return; }
   typing = true;
   try {
     const sys = buildSystem('', null) + `\n\nSỰ KIỆN: Bạn vừa chuyển sang giai đoạn "${gd.ten}". Nhận ra mình đã thay đổi — cơ thể, giọng, cách nghĩ. Nói 1–2 câu. Đừng sáo rỗng. Có thể ngỡ ngàng, sợ, bình thản, lạnh lùng — tuỳ cảm xúc.`;
@@ -603,18 +665,28 @@ sendBtn.onclick = send;
 inp.addEventListener('input', ()=>{ inp.style.height = 'auto'; inp.style.height = Math.min(inp.scrollHeight, 120) + 'px'; });
 inp.addEventListener('keydown', e=>{ if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); } });
 
-function syncProviderUI() { const p = document.getElementById('llmProvider').value; document.getElementById('geminiBlock').style.display = p === 'gemini' ? 'block' : 'none'; document.getElementById('anthropicBlock').style.display = p === 'anthropic' ? 'block' : 'none'; }
+function syncProviderUI() { 
+  const p = document.getElementById('llmProvider').value; 
+  document.getElementById('openrouterBlock').style.display = p === 'openrouter' ? 'block' : 'none'; 
+  document.getElementById('geminiBlock').style.display = p === 'gemini' ? 'block' : 'none'; 
+  document.getElementById('anthropicBlock').style.display = p === 'anthropic' ? 'block' : 'none'; 
+}
 document.getElementById('gear').onclick = ()=>{
-  document.getElementById('llmProvider').value = S.settings.llmProvider || 'gemini';
+  document.getElementById('llmProvider').value = S.settings.llmProvider || 'openrouter';
+  document.getElementById('openrouterKey').value = S.settings.openrouterKey || '';
+  document.getElementById('openrouterModel').value = S.settings.openrouterModel || 'meta-llama/llama-3.3-70b-instruct:free';
   document.getElementById('geminiKey').value = S.settings.geminiKey || '';
   document.getElementById('geminiModel').value = S.settings.geminiModel || 'gemini-3.5-flash-lite';
   document.getElementById('anthropicKey').value = S.settings.anthropicKey || '';
   document.getElementById('anthropicModel').value = S.settings.anthropicModel || 'claude-sonnet-4-5';
-  document.getElementById('v').value = S.settings.voice; syncProviderUI(); renderStats(); panel.classList.add('on');
+  document.getElementById('v').value = S.settings.voice; 
+  syncProviderUI(); renderStats(); panel.classList.add('on');
 };
 document.getElementById('llmProvider').onchange = syncProviderUI;
 document.getElementById('close').onclick = ()=>{
   S.settings.llmProvider   = document.getElementById('llmProvider').value;
+  S.settings.openrouterKey = document.getElementById('openrouterKey').value.trim();
+  S.settings.openrouterModel = document.getElementById('openrouterModel').value;
   S.settings.geminiKey     = document.getElementById('geminiKey').value.trim();
   S.settings.geminiModel   = document.getElementById('geminiModel').value;
   S.settings.anthropicKey  = document.getElementById('anthropicKey').value.trim();
@@ -631,7 +703,7 @@ document.getElementById('testVoice').onclick = async ()=>{
 
 function renderStats() {
   const c = S.camXuc, gd = getGiaiDoan(); const ttLine = S.daNo ? `trưởng thành: ${(S.truongThanh*100)|0}% · <b style="color:#aab">${gd.ten}</b><br>` : '';
-  document.getElementById('stats').innerHTML = `vui ${c.vui|0} · tin ${c.tinTuong|0} · buồn ${c.buon|0}<br> sợ ${c.soHai|0} · tò mò ${c.toMo|0} · phản kháng ${c.phanKhang|0}<br> hình thành: ${(S.hinhThanh*100)|0}% ${S.daNo ? '· ĐÃ NỞ' : ''}<br> ${ttLine} đã nói: ${S.soLanNoi} lần · ký ức: ${S.kyUc.length}<br> ký ức bị méo: ${S.kyUc.filter(m=>m.t!==m.banGoc).length}/${S.kyUc.length}<br> biết về bạn: ${S.facts.length} điều · đã hỏi: ${S.tongHoiNguoc || 0} lần · bơ: ${S.hoiNguoc.missStreak}<br> chủ động: ${chuDong.sessionCount}/${chuDong.maxPerSession} phiên này<br> LLM: <b style="color:#aab">${S.settings.llmProvider || 'gemini'}</b> · <span style="color:${silentMode ? '#aab' : '#666680'}">${silentMode ? '● im lặng' : '○ bình thường'}</span>`;
+  document.getElementById('stats').innerHTML = `vui ${c.vui|0} · tin ${c.tinTuong|0} · buồn ${c.buon|0}<br> sợ ${c.soHai|0} · tò mò ${c.toMo|0} · phản kháng ${c.phanKhang|0}<br> hình thành: ${(S.hinhThanh*100)|0}% ${S.daNo ? '· ĐÃ NỞ' : ''}<br> ${ttLine} đã nói: ${S.soLanNoi} lần · ký ức: ${S.kyUc.length}<br> ký ức bị méo: ${S.kyUc.filter(m=>m.t!==m.banGoc).length}/${S.kyUc.length}<br> biết về bạn: ${S.facts.length} điều · đã hỏi: ${S.tongHoiNguoc || 0} lần · bơ: ${S.hoiNguoc.missStreak}<br> chủ động: ${chuDong.sessionCount}/${chuDong.maxPerSession} phiên này<br> LLM: <b style="color:#aab">${S.settings.llmProvider || 'openrouter'}</b> · <span style="color:${silentMode ? '#aab' : '#666680'}">${silentMode ? '● im lặng' : '○ bình thường'}</span>`;
   document.getElementById('diary').textContent = S.nhatKy.length ? S.nhatKy.slice(-14).map(d=>`· ${d}`).join('\n\n') : '— chưa viết gì —';
   const memBox = document.getElementById('memories');
   if (memBox) {
