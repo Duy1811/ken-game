@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎮 Game Asset Forge V7 - Pixel Matrix</title>
+<title>🎮 Game Asset Forge V8 - True Pixel</title>
 <style>
 :root {
   --bg: #0f1117; --panel: #1a1d27; --panel-2: #232733; --border: #2d3142;
@@ -29,8 +29,7 @@ input, select, textarea { width: 100%; padding: 10px 12px; background: var(--pan
 textarea { resize: vertical; min-height: 60px; }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-@media (max-width: 768px) { .row, .row-3 { grid-template-columns: 1fr; } main { padding: 16px; } }
+@media (max-width: 768px) { .row { grid-template-columns: 1fr; } main { padding: 16px; } }
 button.primary { padding: 12px 24px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; width: 100%; font-family: inherit; }
 button.primary:hover { background: #6a4dff; transform: translateY(-1px); }
 button.secondary { padding: 10px 16px; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; font-family: inherit; }
@@ -52,14 +51,13 @@ canvas { border-radius: 8px; border: 1px solid var(--border); background: repeat
 <body>
 
 <header>
-  <h1>🎮 Game Asset Forge V7 - Pixel Matrix</h1>
-  <p>Hệ thống tạo nhân vật Pixel Art bằng Từ khóa & Hoạt hình Khung xương</p>
+  <h1>🎮 Game Asset Forge V8 - True Pixel</h1>
+  <p>Hệ thống tạo nhân vật Pixel Art Ma trận & Hoạt hình Khung xương</p>
 </header>
 
 <nav class="tabs">
   <button class="tab-btn active" data-tab="character">🧑‍🎨 Tạo Nhân Vật</button>
   <button class="tab-btn" data-tab="animation">🎬 Animation Studio</button>
-  <button class="tab-btn" data-tab="image">🖼️ AI Image Gen</button>
 </nav>
 
 <main>
@@ -67,17 +65,17 @@ canvas { border-radius: 8px; border: 1px solid var(--border); background: repeat
 <!-- ============ TAB CHARACTER CREATOR ============ -->
 <section id="tab-character" class="tab-content active">
   <div class="note">
-    💡 <strong>Tag Parser:</strong> Nhập các từ khóa tiếng Anh cách nhau bởi dấu phẩy. Hệ thống sẽ tự nhận diện.
-    <br><em>Ví dụ:</em> <code>knight, red, sword, cape</code> hoặc <code>mage, purple, staff</code>
+    💡 <strong>Tag Parser:</strong> Nhập từ khóa để tạo nhân vật. 
+    <br>Hỗ trợ: <code>knight, paladin, mage, rogue</code> | Màu: <code>blue, red, purple, gold, dark</code> | Vũ khí: <code>sword, hammer, staff, dagger</code> | Khác: <code>cape, hood</code>
   </div>
   
   <div class="form-group">
     <label>Từ khóa (Tags)</label>
-    <input type="text" id="char-tags" value="knight, blue, sword, cape" placeholder="Nhập từ khóa...">
+    <input type="text" id="char-tags" value="paladin, gold, hammer, cape" placeholder="Nhập từ khóa...">
   </div>
   
   <div class="row" style="margin-bottom: 16px;">
-    <button class="secondary" onclick="setTags('knight, red, sword, cape')">Mẫu: Hiệp sĩ đỏ</button>
+    <button class="secondary" onclick="setTags('knight, blue, sword, cape')">Mẫu: Hiệp sĩ xanh</button>
     <button class="secondary" onclick="setTags('mage, purple, staff, hood')">Mẫu: Pháp sư tím</button>
     <button class="secondary" onclick="setTags('rogue, dark, dagger')">Mẫu: Sát thủ</button>
     <button class="secondary" onclick="setTags('paladin, gold, hammer, cape')">Mẫu: Thánh kỵ sĩ</button>
@@ -86,24 +84,23 @@ canvas { border-radius: 8px; border: 1px solid var(--border); background: repeat
   <button class="primary" id="char-generate">✨ Dựng Nhân Vật</button>
   
   <div class="preview" style="margin-top: 20px;">
-    <canvas id="char-canvas" width="128" height="128" class="sprite-display"></canvas>
-    <p style="font-size: 12px; color: var(--text-dim);">Sử dụng khung xương. Chuyển sang tab Animation để xem.</p>
+    <canvas id="char-canvas" width="256" height="256" class="sprite-display"></canvas>
+    <p style="font-size: 12px; color: var(--text-dim);">Khung xương tĩnh (T-Pose).</p>
   </div>
 </section>
 
 <!-- ============ TAB ANIMATION STUDIO ============ -->
 <section id="tab-animation" class="tab-content">
   <div class="note success">
-    🎬 <strong>Skeletal Animation:</strong> Chuyển động dựa trên khớp xương thực thụ. Mượt mà và chuẩn xác.
+    🎬 <strong>Animation:</strong> Sử dụng khớp xương và ma trận điểm ảnh. Chuyển động mượt mà, không bị nhòe pixel.
   </div>
   <div class="row">
     <div class="form-group">
       <label>Loại Animation</label>
       <select id="anim-type">
-        <option value="idle">Idle (Thở nhẹ nhàng)</option>
-        <option value="walk">Walk (Bước đi)</option>
-        <option value="attack">Attack (Vung vũ khí)</option>
-        <option value="cast">Cast (Niệm phép)</option>
+        <option value="idle">Idle (Thở)</option>
+        <option value="walk">Walk (Đi bộ)</option>
+        <option value="attack">Attack (Tấn công)</option>
       </select>
     </div>
     <div class="form-group">
@@ -115,50 +112,15 @@ canvas { border-radius: 8px; border: 1px solid var(--border); background: repeat
   <div class="preview" style="flex-direction: row; flex-wrap: wrap; gap: 20px;">
     <div style="text-align:center;">
       <p style="font-size:12px; margin-bottom:8px; color:var(--text-dim);">Live Preview</p>
-      <canvas id="anim-preview-canvas" width="128" height="128" style="width:128px; height:128px; image-rendering: pixelated;"></canvas>
+      <canvas id="anim-preview-canvas" width="256" height="256" style="width:128px; height:128px; image-rendering: pixelated;"></canvas>
     </div>
     <div style="text-align:center;">
       <p style="font-size:12px; margin-bottom:8px; color:var(--text-dim);">Sprite Sheet (8 Frames)</p>
-      <canvas id="anim-sheet-canvas" width="1024" height="128" style="width:100%; max-width:512px; height:auto; image-rendering: pixelated;"></canvas>
+      <canvas id="anim-sheet-canvas" width="2048" height="256" style="width:100%; max-width:512px; height:auto; image-rendering: pixelated;"></canvas>
     </div>
   </div>
   <div style="display: flex; gap: 8px; justify-content: center; margin-top: 10px;">
     <button class="download" id="anim-download">📥 Tải Sprite Sheet (PNG)</button>
-  </div>
-</section>
-
-<!-- ============ TAB AI IMAGE GEN ============ -->
-<section id="tab-image" class="tab-content">
-  <div class="note">
-    ⚠️ <strong>AI Image Gen:</strong> Sử dụng Pollinations.ai. (Lưu ý: Không thể tạo animation trực tiếp từ AI, hãy dùng Sprite Sheet ở tab bên cạnh).
-  </div>
-  <div class="form-group">
-    <label>Mô tả chủ thể</label>
-    <textarea id="img-prompt" placeholder="Mô tả bằng tiếng Anh...">Rusty iron sword, pixel art</textarea>
-  </div>
-  <div class="row-3">
-    <div class="form-group">
-      <label>Góc nhìn</label>
-      <select id="img-perspective">
-        <option value="side view profile">Side View</option>
-        <option value="top-down view">Top-down</option>
-        <option value="isometric view">Isometric</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Phong cách</label>
-      <select id="img-style">
-        <option value="pixel art">Pixel Art</option>
-        <option value="2d game asset, vector art">2D Vector</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>&nbsp;</label>
-      <button class="primary" id="img-generate">🎨 Tạo Ảnh</button>
-    </div>
-  </div>
-  <div class="preview" id="img-preview">
-    <div class="preview-empty">Nhập mô tả và bấm "Tạo Ảnh"</div>
   </div>
 </section>
 
@@ -180,201 +142,248 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 // ============================================================
-// PIXEL MATRIX CHARACTER ENGINE
+// TRUE PIXEL ART ENGINE (MATRIX BASED)
 // ============================================================
+
+// Ký tự: x=viền, c=màu chính, d=màu tối, l=màu sáng, s=da, e=mắt, w=gỗ/cán
 const PALETTES = {
-  blue: { skin: '#f1c27d', skinDark: '#c99a5b', hair: '#5c3a21', armor: '#4a90e2', armorDark: '#2c5e8e', armorLight: '#7ab5f2', pants: '#34495e', boots: '#8e44ad', outline: '#111111', metal: '#bdc3c7', metalDark: '#7f8c8d', wood: '#8b5a2b' },
-  red: { skin: '#f1c27d', skinDark: '#c99a5b', hair: '#111111', armor: '#e74c3c', armorDark: '#922b21', armorLight: '#f1948a', pants: '#2c3e50', boots: '#111111', outline: '#000000', metal: '#bdc3c7', metalDark: '#7f8c8d', wood: '#8b5a2b' },
-  purple: { skin: '#e0ac69', skinDark: '#b88952', hair: '#ffffff', armor: '#9b59b6', armorDark: '#6c3483', armorLight: '#c39bd3', pants: '#2c3e50', boots: '#2c3e50', outline: '#000000', metal: '#95a5a6', metalDark: '#7f8c8d', wood: '#8b5a2b' },
-  dark: { skin: '#e0ac69', skinDark: '#b88952', hair: '#ffffff', armor: '#2c3e50', armorDark: '#17202a', armorLight: '#5d6d7e', pants: '#111111', boots: '#000000', outline: '#000000', metal: '#95a5a6', metalDark: '#7f8c8d', wood: '#4a4a4a' },
-  gold: { skin: '#f1c27d', skinDark: '#c99a5b', hair: '#f1c40f', armor: '#f39c12', armorDark: '#d35400', armorLight: '#f8c471', pants: '#34495e', boots: '#d35400', outline: '#111111', metal: '#f1c40f', metalDark: '#b7950b', wood: '#8b5a2b' }
+  blue: { x: '#000', c: '#4a90e2', d: '#2c5e8e', l: '#7ab5f2', s: '#f1c27d', e: '#fff', m: '#bdc3c7', md: '#7f8c8d' },
+  gold: { x: '#000', c: '#f39c12', d: '#d35400', l: '#f8c471', s: '#f1c27d', e: '#fff', m: '#f1c40f', md: '#b7950b' },
+  red:  { x: '#000', c: '#e74c3c', d: '#922b21', l: '#f1948a', s: '#f1c27d', e: '#fff', m: '#bdc3c7', md: '#7f8c8d' },
+  purple: { x: '#000', c: '#9b59b6', d: '#6c3483', l: '#c39bd3', s: '#e0ac69', e: '#fff', m: '#95a5a6', md: '#7f8c8d' },
+  dark: { x: '#000', c: '#2c3e50', d: '#17202a', l: '#5d6d7e', s: '#e0ac69', e: '#fff', m: '#95a5a6', md: '#7f8c8d' },
+  wood: { x: '#000', c: '#8b5a2b', d: '#5c3a21', l: '#a0693c', s: '#f1c27d', e: '#fff', m: '#bdc3c7', md: '#7f8c8d' }
 };
 
-let currentConfig = { tags: [], baseColor: 'blue', head: 'helmet', body: 'armor', weapon: 'sword', hasCape: false, isMage: false };
+const MATRICES = {
+  head_helmet: [
+    "...xxxxx...",
+    "..xlllllx..",
+    ".xlllllllx.",
+    ".xcccccccx.",
+    ".xeeeeeeex.",
+    ".xdddddddx.",
+    "..xxxxxxx.."
+  ],
+  head_hood: [
+    "....xxx....",
+    "...xdddx...",
+    "..xdddddx..",
+    ".xddsssddx.",
+    ".xdsssssdx.",
+    ".xdsssssdx.",
+    "..xsssssx.."
+  ],
+  torso_armor: [
+    "..xxxxxxxx..",
+    ".xlllccccdx.",
+    "xlllcccccddx",
+    "xccccccccddx",
+    "xccccccccddx",
+    ".xccccccddx.",
+    ".xddddddddx.",
+    "..xxxxxxxx.."
+  ],
+  torso_robe: [
+    "...xxxxxx...",
+    "..xlllccdx..",
+    ".xllcccccdx.",
+    ".xcccccccdx.",
+    "xccccccccddx",
+    "xccccccccddx",
+    "xddcccccdddx",
+    "xxxxxxxxxxxx"
+  ],
+  arm: [
+    "xccx",
+    "xccx",
+    "xccx",
+    "xddx",
+    "xxxx"
+  ],
+  leg: [
+    "xccx",
+    "xccx",
+    "xccx",
+    "xddx",
+    "xbbx",
+    "xbbx",
+    "xxxx"
+  ],
+  weapon_sword: [
+    "..xx..",
+    "..mm..",
+    "..mm..",
+    "..mm..",
+    "..mm..",
+    "..mm..",
+    "..mm..",
+    ".xmmx.",
+    "xmmmmx",
+    "..ww..",
+    "..ww..",
+    "..xx.."
+  ],
+  weapon_hammer: [
+    "xxxxxx",
+    "xmmmmx",
+    "xmmmmx",
+    "xmmmmx",
+    "xxxxxx",
+    "..ww..",
+    "..ww..",
+    "..ww..",
+    "..ww..",
+    "..xx.."
+  ],
+  weapon_staff: [
+    "..xx..",
+    ".xllx.",
+    "xllllx",
+    ".xllx.",
+    "..xx..",
+    "..ww..",
+    "..ww..",
+    "..ww..",
+    "..ww..",
+    "..ww..",
+    "..ww..",
+    "..xx.."
+  ],
+  cape: [
+    "xxxxxxxxxx",
+    "xddddddddx",
+    "xddddddddx",
+    "xddddddddx",
+    "xddddddddx",
+    "xddddddddx",
+    "xddddddddx",
+    "xddddddddx",
+    "xddddddddx",
+    "xddddddddx",
+    "xxxxxxxxxx"
+  ]
+};
+
+let currentConfig = { baseColor: 'gold', head: 'head_helmet', body: 'torso_armor', weapon: 'weapon_hammer', hasCape: true };
 
 function parseTags() {
   const raw = $('char-tags').value.toLowerCase();
   const tags = raw.split(',').map(t => t.trim());
   
-  let config = { tags: tags, baseColor: 'blue', head: 'helmet', body: 'armor', weapon: 'sword', hasCape: false, isMage: false };
+  let config = { baseColor: 'blue', head: 'head_helmet', body: 'torso_armor', weapon: 'weapon_sword', hasCape: false };
   
-  // Màu sắc
+  if (tags.includes('gold') || tags.includes('yellow')) config.baseColor = 'gold';
   if (tags.includes('red')) config.baseColor = 'red';
   if (tags.includes('purple')) config.baseColor = 'purple';
   if (tags.includes('dark') || tags.includes('black')) config.baseColor = 'dark';
-  if (tags.includes('gold') || tags.includes('yellow')) config.baseColor = 'gold';
   
-  // Đầu / Mũ
-  if (tags.includes('hood') || tags.includes('mage')) config.head = 'hood';
-  if (tags.includes('bare') || tags.includes('rogue')) config.head = 'bare';
+  if (tags.includes('hood') || tags.includes('mage')) config.head = 'head_hood';
+  if (tags.includes('mage') || tags.includes('robe')) config.body = 'torso_robe';
   
-  // Thân
-  if (tags.includes('mage') || tags.includes('robe')) config.body = 'robe';
-  if (tags.includes('rogue') || tags.includes('leather')) config.body = 'leather';
-  
-  // Vũ khí
-  if (tags.includes('staff')) config.weapon = 'staff';
-  if (tags.includes('dagger')) config.weapon = 'dagger';
-  if (tags.includes('hammer')) config.weapon = 'hammer';
+  if (tags.includes('hammer')) config.weapon = 'weapon_hammer';
+  if (tags.includes('staff')) config.weapon = 'weapon_staff';
   if (tags.includes('none')) config.weapon = 'none';
   
-  // Áo choàng
   if (tags.includes('cape')) config.hasCape = true;
-  
-  if (config.body === 'robe') config.isMage = true;
 
   return config;
 }
 
-function setTags(str) {
-  $('char-tags').value = str;
-  renderStaticCharacter();
+// Hàm chuyển đổi ma trận string thành Canvas ảo (để vẽ không bị nhòe khi xoay)
+function createSpriteCanvas(matrix, palette) {
+  const h = matrix.length;
+  const w = matrix[0].length;
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const char = matrix[y][x];
+      if (char === '.') continue;
+      let color = palette.x;
+      if (char === 'c') color = palette.c;
+      else if (char === 'd') color = palette.d;
+      else if (char === 'l') color = palette.l;
+      else if (char === 's') color = palette.s;
+      else if (char === 'e') color = palette.e;
+      else if (char === 'm') color = palette.m;
+      else if (char === 'b') color = '#3e2723'; // Boots
+      else if (char === 'w') color = '#8b5a2b'; // Wood
+      
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, 1, 1);
+    }
+  }
+  return canvas;
 }
 
-// Hàm vẽ nhân vật (Truyền vào context, cấu hình, và góc xương)
+// Render toàn bộ nhân vật
 function drawCharacter(ctx, config, pose = {}) {
-  const C = PALETTES[config.baseColor];
-  const scale = 2; // 64x64 -> 128x128
-  
+  const scale = 4; // 32x32 base -> 128x128
   ctx.save();
+  ctx.translate(128, 220); // Điểm neo (chân)
   ctx.scale(scale, scale);
   ctx.imageSmoothingEnabled = false;
 
-  // Góc mặc định
-  let angles = {
-    head: 0, torso: 0,
-    shoulderB: 0, elbowB: 0, // Tay sau (Back)
-    shoulderF: 0, elbowF: 0, // Tay trước (Front)
-    hipB: 0, kneeB: 0,       // Chân sau
-    hipF: 0, kneeF: 0        // Chân trước
-  };
+  const P = PALETTES[config.baseColor];
+  
+  // Lấy góc xoay
+  let angles = { head: 0, torso: 0, armB: 0, armF: 0, legB: 0, legF: 0, cape: 0 };
   if (pose) Object.assign(angles, pose);
 
-  const baseX = 32, baseY = 60;
-
-  // Hàm vẽ một mảng pixel (dùng để vẽ tay/chân)
-  function drawPart(x, y, w, h, color, outline = true) {
-    ctx.fillStyle = color; ctx.fillRect(x, y, w, h);
-    if (outline) { ctx.strokeStyle = C.outline; ctx.lineWidth = 1; ctx.strokeRect(x, y, w, h); }
+  // Tạo canvas ảo cho từng bộ phận (cache lại để tối ưu)
+  if (!window.spriteCache) window.spriteCache = {};
+  function getPart(name) {
+    if (!window.spriteCache[name]) window.spriteCache[name] = createSpriteCanvas(MATRICES[name], P);
+    return window.spriteCache[name];
   }
 
-  // 1. VẼ ÁO CHOÀNG (Nếu có, vẽ sau cùng)
-  if (config.hasCape) {
+  // Hàm vẽ một khớp
+  function drawJoint(partName, offsetX, offsetY, angle, anchorX, anchorY) {
+    const part = getPart(partName);
     ctx.save();
-    ctx.translate(baseX, baseY - 30);
-    ctx.fillStyle = C.armorDark;
-    ctx.beginPath(); ctx.moveTo(-10, 0); ctx.lineTo(10, 0); ctx.lineTo(14, 25); ctx.lineTo(-14, 25); ctx.fill();
-    ctx.strokeStyle = C.outline; ctx.stroke();
+    ctx.translate(offsetX, offsetY);
+    ctx.rotate(angle * Math.PI / 180);
+    // Vẽ neo ở đỉnh (hoặc giữa tùy bộ phận)
+    ctx.drawImage(part, -anchorX, -anchorY);
     ctx.restore();
   }
 
-  // 2. VẼ CHÂN SAU (Back Leg)
-  const hipY = baseY - 20;
-  ctx.save();
-  ctx.translate(baseX - 3, hipY);
-  ctx.rotate(angles.hipB * Math.PI / 180);
-  drawPart(-3, 0, 6, 12, C.armorDark); // Đùi
-  ctx.translate(0, 12);
-  ctx.rotate(angles.kneeB * Math.PI / 180);
-  drawPart(-3, 0, 6, 10, C.armorDark); // Cẳng chân
-  ctx.translate(0, 10);
-  drawPart(-4, 0, 8, 4, C.boots); // Giày
-  ctx.restore();
-
-  // 3. VẼ TAY SAU (Back Arm)
-  const shoulderY = baseY - 36;
-  ctx.save();
-  ctx.translate(baseX - 6, shoulderY);
-  ctx.rotate(angles.shoulderB * Math.PI / 180);
-  drawPart(-3, 0, 6, 12, C.armorDark); // Bắp tay
-  ctx.translate(0, 12);
-  ctx.rotate(angles.elbowB * Math.PI / 180);
-  drawPart(-2, 0, 4, 8, C.skinDark); // Cẳng tay
-  ctx.restore();
-
-  // 4. VẼ THÂN (Torso)
-  ctx.save();
-  ctx.translate(baseX, baseY - 38);
-  ctx.rotate(angles.torso * Math.PI / 180);
-  
-  if (config.body === 'robe') {
-    // Áo choàng pháp sư (xòe dưới)
-    ctx.fillStyle = C.armor;
-    ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(8, 0); ctx.lineTo(12, 20); ctx.lineTo(-12, 20); ctx.fill();
-    ctx.strokeStyle = C.outline; ctx.stroke();
-    // Thắt lưng
-    ctx.fillStyle = C.metalDark; ctx.fillRect(-8, 14, 16, 3);
-  } else {
-    // Áo giáp
-    drawPart(-8, 0, 16, 18, C.armor);
-    // Cầu vai (Pauldrons)
-    drawPart(-12, 0, 6, 6, C.metal); // Trái
-    drawPart(6, 0, 6, 6, C.metal);   // Phải
-    // Thắt lưng
-    ctx.fillStyle = C.metalDark; ctx.fillRect(-8, 16, 16, 3);
+  // 1. Áo choàng (vẽ sau cùng)
+  if (config.hasCape) {
+    drawJoint('cape', 0, -16, angles.cape, 5, 0);
   }
 
-  // 5. VẼ ĐẦU (Head)
-  ctx.save();
-  ctx.translate(0, -2);
-  ctx.rotate(angles.head * Math.PI / 180);
-  
-  if (config.head === 'bare') {
-    // Đầu trần (Tóc)
-    drawPart(-5, -8, 10, 8, C.skin);
-    ctx.fillStyle = C.hair; ctx.fillRect(-5, -8, 10, 3); // Tóc
-    ctx.fillStyle = C.outline; ctx.fillRect(-3, -4, 2, 2); ctx.fillRect(1, -4, 2, 2); // Mắt
-  } else if (config.head === 'hood') {
-    // Mũ trùm
-    ctx.fillStyle = C.armorDark;
-    ctx.beginPath(); ctx.arc(0, -4, 7, Math.PI, 0); ctx.fill();
-    ctx.strokeStyle = C.outline; ctx.stroke();
-    // Mặt trong bóng tối
-    ctx.fillStyle = C.skinDark; ctx.fillRect(-4, -4, 8, 5);
-    ctx.fillStyle = C.outline; ctx.fillRect(-3, -3, 2, 2); ctx.fillRect(1, -3, 2, 2); // Mắt
-  } else {
-    // Mũ giáp sắt (Helmet)
-    drawPart(-6, -10, 12, 10, C.metal);
-    ctx.fillStyle = C.outline; ctx.fillRect(-5, -6, 10, 3); // Khe mắt
-  }
-  ctx.restore(); // Kết thúc đầu
+  // 2. Chân sau (Back Leg)
+  drawJoint('leg', -3, -18, angles.legB, 2, 0);
 
-  // 6. VẼ TAY TRƯỚC (Front Arm & Weapon)
-  ctx.save();
-  ctx.translate(baseX + 6, shoulderY);
-  ctx.rotate(angles.shoulderF * Math.PI / 180);
-  drawPart(-3, 0, 6, 12, C.armor); // Bắp tay
-  ctx.translate(0, 12);
-  ctx.rotate(angles.elbowF * Math.PI / 180);
-  drawPart(-2, 0, 4, 8, C.skin); // Cẳng tay
-  
-  // Vũ khí (Gắn vào bàn tay)
+  // 3. Tay sau (Back Arm)
+  drawJoint('arm', -5, -26, angles.armB, 2, 0);
+
+  // 4. Thân (Torso)
+  drawJoint(config.body, 0, -26, angles.torso, 6, 0);
+
+  // 5. Đầu (Head)
+  drawJoint(config.head, 0, -35, angles.head, 5, 0); // Kết nối với torso
+
+  // 6. Chân trước (Front Leg)
+  drawJoint('leg', 3, -18, angles.legF, 2, 0);
+
+  // 7. Tay trước & Vũ khí (Front Arm & Weapon)
   if (config.weapon !== 'none') {
-    ctx.translate(0, 8);
-    if (config.weapon === 'sword') {
-      drawPart(-1, -12, 2, 20, C.metal); // Lưỡi kiếm
-      drawPart(-4, 8, 8, 2, C.metalDark); // Chắn kiếm
-      drawPart(-1, 10, 2, 4, C.wood); // Chuôi
-    } else if (config.weapon === 'staff') {
-      drawPart(-1, -10, 2, 24, C.wood); // Cán
-      ctx.fillStyle = C.armorLight; ctx.beginPath(); ctx.arc(0, -12, 3, 0, Math.PI*2); ctx.fill(); // Ngọc
-      ctx.strokeStyle = C.outline; ctx.stroke();
-    } else if (config.weapon === 'dagger') {
-      drawPart(-1, -4, 2, 10, C.metal);
-      drawPart(-2, 6, 4, 2, C.metalDark);
-    } else if (config.weapon === 'hammer') {
-      drawPart(-1, -8, 2, 16, C.wood);
-      drawPart(-4, -10, 8, 6, C.metal); // Đầu búa
-    }
+    // Vẽ vũ khí đè lên tay
+    drawJoint(config.weapon, 5, -30, angles.armF, 3, 8); // Neo ở cán
   }
-  ctx.restore(); // Kết thúc tay trước
+  drawJoint('arm', 5, -26, angles.armF, 2, 0);
 
-  ctx.restore(); // Kết thúc torso
-  ctx.restore(); // Kết thúc scale
+  ctx.restore();
 }
 
 function renderStaticCharacter() {
   currentConfig = parseTags();
+  window.spriteCache = {}; // Xóa cache khi đổi màu
   const canvas = $('char-canvas');
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -382,9 +391,10 @@ function renderStaticCharacter() {
 }
 
 $('char-generate').addEventListener('click', renderStaticCharacter);
+function setTags(str) { $('char-tags').value = str; renderStaticCharacter(); }
 
 // ============================================================
-// SKELETAL ANIMATION ENGINE
+// SKELETAL ANIMATION
 // ============================================================
 let animFrameId = null;
 let animFrames = [];
@@ -397,55 +407,33 @@ function generateAnimation() {
   
   for (let i = 0; i < NUM_FRAMES; i++) {
     const t = i / NUM_FRAMES;
-    const angle = Math.sin(t * Math.PI * 2); // -1 to 1
+    const angle = Math.sin(t * Math.PI * 2);
     const pose = {};
     
     if (type === 'idle') {
       pose.torso = angle * 2;
       pose.head = angle * 2;
-      pose.shoulderB = angle * 3; pose.elbowB = -angle * 2;
-      pose.shoulderF = -angle * 3; pose.elbowF = angle * 2;
-      pose.hipB = angle * 1; pose.hipF = -angle * 1;
+      pose.armB = angle * 4;
+      pose.armF = -angle * 4;
+      pose.cape = angle * 3;
     } else if (type === 'walk') {
-      const walkAngle = 25;
-      pose.hipB = -angle * walkAngle;
-      pose.kneeB = Math.max(0, angle * walkAngle);
-      pose.hipF = angle * walkAngle;
-      pose.kneeF = Math.max(0, -angle * walkAngle);
-      
-      pose.shoulderB = angle * 20; pose.elbowB = -Math.abs(angle) * 10;
-      pose.shoulderF = -angle * 20; pose.elbowF = -Math.abs(angle) * 10;
-      
-      pose.torso = Math.abs(angle) * 3;
-      pose.head = Math.abs(angle) * 3;
+      const walk = 25;
+      pose.legB = -angle * walk;
+      pose.legF = angle * walk;
+      pose.armB = angle * 20;
+      pose.armF = -angle * 20;
+      pose.torso = Math.abs(angle) * 2;
+      pose.cape = 10 + angle * 5;
     } else if (type === 'attack') {
-      const swing = Math.sin(t * Math.PI * 2);
-      const backSwing = Math.max(0, -swing); // 0 to 1
-      const frontSwing = Math.max(0, swing); // 0 to 1
-      
       if (t < 0.5) {
-        // Rút vũ khí ra sau
-        pose.shoulderF = -90 * (t*2);
-        pose.elbowF = -45 * (t*2);
+        pose.armF = -90 * (t*2);
         pose.torso = -10 * (t*2);
       } else {
-        // Chém tới
-        const p = (t - 0.5) * 2; // 0 to 1
-        pose.shoulderF = -90 + 180 * p;
-        pose.elbowF = -45 + 90 * p;
+        const p = (t - 0.5) * 2;
+        pose.armF = -90 + 180 * p;
         pose.torso = -10 + 20 * p;
-        pose.hipF = 10 * p;
-        pose.hipB = -10 * p;
       }
-    } else if (type === 'cast') {
-      // Niệm phép (Tay đưa lên cao)
-      pose.shoulderF = -120 + Math.sin(t * Math.PI * 2) * 10;
-      pose.elbowF = -30;
-      pose.shoulderB = -90;
-      pose.head = -10;
-      pose.torso = -5;
     }
-    
     animFrames.push(pose);
   }
   
@@ -456,14 +444,14 @@ function generateAnimation() {
 
 function renderSpriteSheet() {
   const sheetCanvas = $('anim-sheet-canvas');
-  sheetCanvas.width = 128 * NUM_FRAMES;
-  sheetCanvas.height = 128;
+  sheetCanvas.width = 256 * NUM_FRAMES;
+  sheetCanvas.height = 256;
   const ctx = sheetCanvas.getContext('2d');
   ctx.clearRect(0, 0, sheetCanvas.width, sheetCanvas.height);
   
   for (let i = 0; i < NUM_FRAMES; i++) {
     ctx.save();
-    ctx.translate(i * 128, 0); // Dịch sang frame tiếp theo
+    ctx.translate(i * 256, 0);
     drawCharacter(ctx, currentConfig, animFrames[i]);
     ctx.restore();
   }
@@ -472,10 +460,8 @@ function renderSpriteSheet() {
 function playAnimation() {
   const canvas = $('anim-preview-canvas');
   const ctx = canvas.getContext('2d');
-  let frame = 0;
-  let lastTime = 0;
-  const fps = 12; // 12 khung hình/giây
-  const interval = 1000 / fps;
+  let frame = 0, lastTime = 0;
+  const interval = 1000 / 10; // 10 FPS
   
   function loop(time) {
     if (time - lastTime > interval) {
@@ -491,53 +477,14 @@ function playAnimation() {
 
 $('anim-generate').addEventListener('click', generateAnimation);
 $('anim-download').addEventListener('click', () => {
-  const sheet = $('anim-sheet-canvas');
   const a = document.createElement('a');
-  a.href = sheet.toDataURL('image/png');
+  a.href = $('anim-sheet-canvas').toDataURL('image/png');
   a.download = `spritesheet-${Date.now()}.png`;
   a.click();
-  showToast('Đã tải Sprite Sheet!', 'success');
 });
 
-// Khởi tạo
+// Khởi tạo ban đầu
 renderStaticCharacter();
-
-// ============================================================
-// AI IMAGE GENERATION
-// ============================================================
-let imgCooldownUntil = 0;
-function updateImageBtn() {
-  const btn = $('img-generate'); const now = Date.now();
-  if (now < imgCooldownUntil) {
-    const remaining = Math.ceil((imgCooldownUntil - now) / 1000);
-    btn.disabled = true; btn.textContent = `⏳ Chờ ${remaining}s...`;
-    setTimeout(updateImageBtn, 500);
-  } else { btn.disabled = false; btn.textContent = '🎨 Tạo Ảnh'; }
-}
-async function generateImage() {
-  const prompt = $('img-prompt').value.trim();
-  if (!prompt) { showToast('Nhập mô tả trước đã!', 'error'); return; }
-  const perspective = $('img-perspective').value;
-  const style = $('img-style').value;
-  const styleLock = `game asset, isolated on solid white background, no shadows, high quality, masterpiece`;
-  const fullPrompt = `${prompt}, ${perspective}, ${style}, ${styleLock}`;
-  const seed = Math.floor(Math.random() * 1000000);
-  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}?width=512&height=512&seed=${seed}&nologo=true&model=flux`;
-  imgCooldownUntil = Date.now() + 15000; updateImageBtn();
-  const preview = $('img-preview');
-  preview.innerHTML = '<div class="spinner" style="margin-bottom:10px"></div><div class="preview-empty">Đang tạo ảnh...</div>';
-  const img = new Image(); img.crossOrigin = 'anonymous';
-  img.onload = () => {
-    preview.innerHTML = ''; img.style.maxWidth = '100%'; img.style.borderRadius = '8px'; preview.appendChild(img);
-    const btn = document.createElement('button'); btn.className = 'download'; btn.textContent = '📥 Tải ảnh'; btn.style.marginTop = '10px';
-    btn.onclick = () => { const a = document.createElement('a'); a.href = url; a.download = `asset-${Date.now()}.png`; a.click(); };
-    preview.appendChild(btn); showToast('Tạo ảnh thành công!', 'success');
-  };
-  img.onerror = () => { preview.innerHTML = '<div class="preview-empty" style="color:var(--accent-3)">❌ Lỗi API. Thử lại sau.</div>'; };
-  img.src = url;
-}
-$('img-generate').addEventListener('click', generateImage);
-updateImageBtn();
 </script>
 </body>
 </html>
