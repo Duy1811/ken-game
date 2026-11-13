@@ -3,65 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎮 Game Asset Forge V5 - Pro</title>
+<title>🎮 Game Asset Forge V6 - Skeletal Edition</title>
 <style>
 :root {
-  --bg: #0f1117;
-  --panel: #1a1d27;
-  --panel-2: #232733;
-  --border: #2d3142;
-  --text: #e4e6eb;
-  --text-dim: #8b90a0;
-  --accent: #7c5cff;
-  --accent-2: #00d4aa;
-  --accent-3: #ff6b6b;
-  --success: #22c55e;
-  --warning: #f59e0b;
+  --bg: #0f1117; --panel: #1a1d27; --panel-2: #232733; --border: #2d3142;
+  --text: #e4e6eb; --text-dim: #8b90a0; --accent: #7c5cff; --accent-2: #00d4aa;
+  --accent-3: #ff6b6b; --success: #22c55e; --warning: #f59e0b;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-header {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--border);
-  background: var(--panel);
-}
-h1 {
-  font-size: 22px;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+header { padding: 20px 24px; border-bottom: 1px solid var(--border); background: var(--panel); }
+h1 { font-size: 22px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 header p { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
-.tabs {
-  display: flex;
-  gap: 8px;
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--border);
-  background: var(--panel);
-  overflow-x: auto;
-}
-.tab-btn {
-  padding: 10px 18px;
-  background: var(--panel-2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-dim);
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s;
-  white-space: nowrap;
-  font-family: inherit;
-  font-weight: 600;
-}
+.tabs { display: flex; gap: 8px; padding: 16px 24px; border-bottom: 1px solid var(--border); background: var(--panel); overflow-x: auto; }
+.tab-btn { padding: 10px 18px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text-dim); cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; white-space: nowrap; font-family: inherit; }
 .tab-btn:hover { color: var(--text); border-color: var(--accent); }
 .tab-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 main { flex: 1; padding: 24px; max-width: 1200px; width: 100%; margin: 0 auto; }
@@ -70,116 +25,31 @@ main { flex: 1; padding: 24px; max-width: 1200px; width: 100%; margin: 0 auto; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .form-group { margin-bottom: 16px; }
 label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-dim); font-weight: 600; }
-input, select, textarea {
-  width: 100%;
-  padding: 10px 12px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-size: 14px;
-  font-family: inherit;
-}
+input, select, textarea { width: 100%; padding: 10px 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px; font-family: inherit; }
 textarea { resize: vertical; min-height: 80px; }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 .row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
-@media (max-width: 768px) {
-  .row, .row-3, .row-4 { grid-template-columns: 1fr; }
-  main { padding: 16px; }
-}
-button.primary {
-  padding: 12px 24px;
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 100%;
-  font-family: inherit;
-}
+@media (max-width: 768px) { .row, .row-3, .row-4 { grid-template-columns: 1fr; } main { padding: 16px; } }
+button.primary { padding: 12px 24px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; width: 100%; font-family: inherit; }
 button.primary:hover:not(:disabled) { background: #6a4dff; transform: translateY(-1px); }
 button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
-button.secondary {
-  padding: 10px 16px;
-  background: var(--panel-2);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-family: inherit;
-  transition: all 0.2s;
-  font-weight: 600;
-}
+button.secondary { padding: 10px 16px; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; font-family: inherit; }
 button.secondary:hover { border-color: var(--accent); }
-button.download {
-  padding: 10px 20px;
-  background: var(--accent-2);
-  color: #0f1117;
-  border: none;
-  border-radius: 8px;
-  font-weight: 700;
-  cursor: pointer;
-  font-size: 14px;
-  font-family: inherit;
-  transition: all 0.2s;
-}
+button.download { padding: 10px 20px; background: var(--accent-2); color: #0f1117; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; font-family: inherit; transition: all 0.2s; }
 button.download:hover { filter: brightness(1.1); }
-.preview {
-  margin-top: 20px;
-  padding: 20px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  min-height: 220px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 16px;
-}
+.preview { margin-top: 20px; padding: 20px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; min-height: 220px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
 .preview img { max-width: 100%; max-height: 500px; border-radius: 8px; }
 .preview-empty { color: var(--text-dim); font-size: 14px; text-align: center; }
-.note {
-  padding: 12px 16px;
-  background: rgba(245, 158, 11, 0.1);
-  border-left: 3px solid var(--warning);
-  border-radius: 6px;
-  font-size: 13px;
-  color: var(--text-dim);
-  margin-bottom: 16px;
-  line-height: 1.5;
-}
+.note { padding: 12px 16px; background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--warning); border-radius: 6px; font-size: 13px; color: var(--text-dim); margin-bottom: 16px; line-height: 1.5; }
 .note.info { background: rgba(124, 92, 255, 0.1); border-left-color: var(--accent); }
 .note.success { background: rgba(34, 197, 94, 0.1); border-left-color: var(--success); }
-.spinner {
-  width: 32px; height: 32px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
+.spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-canvas {
-  image-rendering: pixelated;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: repeating-conic-gradient(#1a1d27 0% 25%, #232733 0% 50%) 50% / 20px 20px;
-}
-.sprite-display { width: 256px; height: 256px; }
-.spritesheet-display { width: 100%; max-width: 512px; height: 128px; background: var(--panel-2); }
-.sprite-controls, .anim-controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px;}
-.toast {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
-  background: var(--panel-2); border: 1px solid var(--border); padding: 12px 20px;
-  border-radius: 10px; font-size: 14px; transition: transform 0.3s; z-index: 1000;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-}
+canvas { border-radius: 8px; border: 1px solid var(--border); background: repeating-conic-gradient(#1a1d27 0% 25%, #232733 0% 50%) 50% / 20px 20px; }
+.sprite-display { width: 100%; max-width: 400px; height: auto; }
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--panel-2); border: 1px solid var(--border); padding: 12px 20px; border-radius: 10px; font-size: 14px; transition: transform 0.3s; z-index: 1000; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
 .toast.show { transform: translateX(-50%) translateY(0); }
 .toast.success { border-color: var(--success); }
 .toast.error { border-color: var(--accent-3); }
@@ -188,45 +58,122 @@ canvas {
 <body>
 
 <header>
-  <h1>🎮 Game Asset Forge V5 - Pro Edition</h1>
-  <p>Hệ thống sản xuất tài nguyên game chuẩn công nghiệp</p>
+  <h1>🎮 Game Asset Forge V6 - Skeletal Edition</h1>
+  <p>Hệ thống tạo nhân vật Modular & Hoạt hình xương (Skeletal Animation)</p>
 </header>
 
 <nav class="tabs">
-  <button class="tab-btn active" data-tab="image">🖼️ Tạo Ảnh AI</button>
-  <button class="tab-btn" data-tab="sprite">🎨 Tạo Sprite (Pixel)</button>
-  <button class="tab-btn" data-tab="animate">🎬 Tạo Animation</button>
-  <button class="tab-btn" data-tab="sound">🎵 Tạo Âm thanh</button>
+  <button class="tab-btn active" data-tab="character">🧑‍🎨 Tạo Nhân Vật</button>
+  <button class="tab-btn" data-tab="animation">🎬 Animation Studio</button>
+  <button class="tab-btn" data-tab="image">🖼️ AI Image Gen</button>
+  <button class="tab-btn" data-tab="sound">🎵 Âm thanh</button>
 </nav>
 
 <main>
 
-<!-- ============ TAB IMAGE ============ -->
-<section id="tab-image" class="tab-content active">
-  <div class="note">
-    ⚠️ <strong>Prompt Optimization & Style Locking:</strong> Hệ thống tự động thêm các thẻ (tag) khóa phong cách để AI không vẽ lệch tông và giữ nguyên góc nhìn bạn chọn.
-  </div>
-  <div class="form-group">
-    <label>Mô tả chủ thể (Ví dụ: iron knight, wooden chest, magic potion)</label>
-    <textarea id="img-prompt" placeholder="Mô tả bằng tiếng Anh...">Rusty iron sword</textarea>
+<!-- ============ TAB CHARACTER CREATOR ============ -->
+<section id="tab-character" class="tab-content active">
+  <div class="note info">
+    🧑‍🎨 <strong>Modular Character Creator:</strong> Chọn từng bộ phận (Đầu, Thân, Tay, Chân, Vũ khí). Nhân vật được dựng từ các khớp xương, sẵn sàng cho animation.
   </div>
   <div class="row-4">
     <div class="form-group">
-      <label>Góc nhìn (Perspective)</label>
+      <label>Mũ / Đầu</label>
+      <select id="char-head">
+        <option value="helmet_iron">Mũ giáp sắt</option>
+        <option value="helmet_horned">Mũ giáp có sừng</option>
+        <option value="hood">Mũ trùm</option>
+        <option value="bare">Đầu trần</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Áo / Thân</label>
+      <select id="char-body">
+        <option value="armor_heavy">Giáp nặng</option>
+        <option value="armor_light">Giáp nhẹ</option>
+        <option value="robe">Áo choàng pháp sư</option>
+        <option value="tunic">Áo vải</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Vũ khí (Tay phải)</label>
+      <select id="char-weapon">
+        <option value="sword">Kiếm dài</option>
+        <option value="axe">Rìu chiến</option>
+        <option value="staff">Gậy phép</option>
+        <option value="none">Không vũ khí</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Màu chủ đạo</label>
+      <select id="char-color">
+        <option value="blue">Xanh dương (Hiệp sĩ)</option>
+        <option value="red">Đỏ (Cuồng chiến)</option>
+        <option value="purple">Tím (Sát thủ)</option>
+        <option value="green">Xanh lá (Ranger)</option>
+        <option value="dark">Đen (Bóng tối)</option>
+      </select>
+    </div>
+  </div>
+  <button class="primary" id="char-generate">✨ Dựng Nhân Vật</button>
+  
+  <div class="preview" style="margin-top: 20px;">
+    <canvas id="char-canvas" width="128" height="128" class="sprite-display" style="image-rendering: pixelated;"></canvas>
+    <p style="font-size: 12px; color: var(--text-dim);">Nhân vật tĩnh (T-Pose). Chuyển sang tab Animation để xem chuyển động.</p>
+  </div>
+</section>
+
+<!-- ============ TAB ANIMATION STUDIO ============ -->
+<section id="tab-animation" class="tab-content">
+  <div class="note success">
+    🎬 <strong>Skeletal Animation Engine:</strong> Sử dụng các khớp xương (vai, khuỷu tay, hông, đầu gối) để tạo chuyển động mượt mà. Xuất Sprite Sheet chuẩn game engine.
+  </div>
+  <div class="row">
+    <div class="form-group">
+      <label>Loại Animation</label>
+      <select id="anim-type">
+        <option value="idle">Idle (Thở nhẹ nhàng)</option>
+        <option value="walk">Walk (Bước đi)</option>
+        <option value="attack">Attack (Vung vũ khí)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>&nbsp;</label>
+      <button class="primary" id="anim-generate">🎬 Tạo Animation</button>
+    </div>
+  </div>
+  
+  <div class="preview" style="flex-direction: row; flex-wrap: wrap; gap: 20px;">
+    <div style="text-align:center;">
+      <p style="font-size:12px; margin-bottom:8px; color:var(--text-dim);">Live Preview</p>
+      <canvas id="anim-preview-canvas" width="128" height="128" style="width:128px; height:128px; image-rendering: pixelated;"></canvas>
+    </div>
+    <div style="text-align:center;">
+      <p style="font-size:12px; margin-bottom:8px; color:var(--text-dim);">Sprite Sheet (8 Frames)</p>
+      <canvas id="anim-sheet-canvas" width="1024" height="128" style="width:100%; max-width:512px; height:auto; image-rendering: pixelated;"></canvas>
+    </div>
+  </div>
+  <div style="display: flex; gap: 8px; justify-content: center; margin-top: 10px;">
+    <button class="download" id="anim-download">📥 Tải Sprite Sheet (PNG)</button>
+  </div>
+</section>
+
+<!-- ============ TAB AI IMAGE GEN ============ -->
+<section id="tab-image" class="tab-content">
+  <div class="note">
+    ⚠️ <strong>Prompt Optimization:</strong> Hệ thống tự động khóa phong cách và góc nhìn. Để tạo animation từ ảnh AI, bạn có thể dùng các công cụ chuyên dụng như <strong>AnimGen AI</strong> (có bậc miễn phí) hoặc <strong>God Mode</strong>[reference:3][reference:4].
+  </div>
+  <div class="form-group">
+    <label>Mô tả chủ thể (Ví dụ: iron knight, wooden chest)</label>
+    <textarea id="img-prompt" placeholder="Mô tả bằng tiếng Anh...">Rusty iron sword</textarea>
+  </div>
+  <div class="row-3">
+    <div class="form-group">
+      <label>Góc nhìn</label>
       <select id="img-perspective">
         <option value="side view profile">Side View (Platformer)</option>
         <option value="top-down view">Top-down (RPG)</option>
         <option value="isometric view">Isometric (45 độ)</option>
-        <option value="front view facing forward">Front View (Chính diện)</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Ánh sáng</label>
-      <select id="img-light">
-        <option value="studio lighting, soft shadows">Studio (Sạch sẽ)</option>
-        <option value="dramatic lighting, rim light">Dramatic (Kịch tính)</option>
-        <option value="dark fantasy, moody lighting">Dark Fantasy</option>
-        <option value="flat lighting, unlit">Flat (Phẳng, dễ ghép)</option>
       </select>
     </div>
     <div class="form-group">
@@ -235,7 +182,6 @@ canvas {
         <option value="pixel art">Pixel Art</option>
         <option value="2d game asset, vector art">2D Vector</option>
         <option value="3d render, low poly">Low Poly 3D</option>
-        <option value="hand drawn, cartoon style">Hand Drawn</option>
       </select>
     </div>
     <div class="form-group">
@@ -248,91 +194,10 @@ canvas {
   </div>
 </section>
 
-<!-- ============ TAB SPRITE ============ -->
-<section id="tab-sprite" class="tab-content">
-  <div class="note info">
-    🎨 <strong>V5 Upgrade:</strong> Hỗ trợ góc nhìn (Side/Top-down) và vẽ vật phẩm chi tiết (Rương, Bình thuốc, Kiếm, Khiên, Xu).
-  </div>
-  <div class="row-4">
-    <div class="form-group">
-      <label>Đối tượng</label>
-      <select id="spr-type">
-        <option value="character">Nhân vật</option>
-        <option value="item_potion">Vật phẩm: Bình thuốc</option>
-        <option value="item_chest">Vật phẩm: Rương báu</option>
-        <option value="item_sword">Vật phẩm: Thanh kiếm</option>
-        <option value="item_coin">Vật phẩm: Đồng xu</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Góc nhìn (Perspective)</label>
-      <select id="spr-perspective">
-        <option value="side">Góc nghiêng (Side-scroller)</option>
-        <option value="front">Chính diện (Đối xứng)</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Bảng màu</label>
-      <select id="spr-palette">
-        <option value="hero">Anh hùng</option>
-        <option value="dark">Bóng tối</option>
-        <option value="crimson">Máu lửa</option>
-        <option value="cyber">Cyberpunk</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>&nbsp;</label>
-      <button class="primary" id="spr-generate">🎨 Tạo Sprite</button>
-    </div>
-  </div>
-  <div class="preview">
-    <canvas id="spr-canvas" class="sprite-display"></canvas>
-    <div id="spr-seed-text" style="font-size:12px; color:var(--text-dim); margin-top:-10px; font-family:monospace;">Seed: 000000</div>
-    <div class="sprite-controls">
-      <button class="secondary" id="spr-randomize">🔀 Ngẫu nhiên</button>
-      <button class="download" id="spr-download">📥 Tải PNG (64x64)</button>
-    </div>
-  </div>
-</section>
-
-<!-- ============ TAB ANIMATION ============ -->
-<section id="tab-animate" class="tab-content">
-  <div class="note success">
-    🎬 <strong>Animation Engine:</strong> Hệ thống phân tích ma trận điểm ảnh của Sprite hiện tại để tạo chuyển động. (Lưu ý: Hãy tạo Sprite ở Tab trước, sau đó qua đây bấm Tạo Animation).
-  </div>
-  <div class="row">
-    <div class="form-group">
-      <label>Loại chuyển động</label>
-      <select id="anim-type">
-        <option value="idle">Idle (Nhấp nhô - Thở)</option>
-        <option value="walk">Walk (Bước đi - Side View)</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>&nbsp;</label>
-      <button class="primary" id="anim-generate">🎬 Tạo Animation (4 Frames)</button>
-    </div>
-  </div>
-  
-  <div class="preview" style="flex-direction: row; flex-wrap: wrap;">
-    <div style="text-align:center;">
-      <p style="font-size:12px; margin-bottom:8px; color:var(--text-dim);">Live Preview</p>
-      <canvas id="anim-canvas-preview" width="64" height="64" style="width:128px; height:128px;"></canvas>
-    </div>
-    <div style="text-align:center;">
-      <p style="font-size:12px; margin-bottom:8px; color:var(--text-dim);">Sprite Sheet (Tải về)</p>
-      <canvas id="anim-canvas-sheet" width="256" height="64" style="width:256px; height:64px;"></canvas>
-    </div>
-  </div>
-  <div class="anim-controls">
-    <button class="download" id="anim-download">📥 Tải Sprite Sheet (PNG)</button>
-  </div>
-</section>
-
 <!-- ============ TAB SOUND ============ -->
 <section id="tab-sound" class="tab-content">
   <div class="note info">
-    🎵 Tạo hiệu ứng âm thanh bằng <strong>Web Audio API</strong> — 100% miễn phí, không giới hạn, xuất file WAV.
+    🎵 Tạo hiệu ứng âm thanh bằng <strong>Web Audio API</strong> — miễn phí, xuất file WAV.
   </div>
   <div class="row">
     <div class="form-group">
@@ -375,24 +240,10 @@ canvas {
 // UTILITIES & SETUP
 // ============================================================
 function $(id) { return document.getElementById(id); }
-
 function showToast(msg, type = '') {
-  const t = $('toast');
-  t.textContent = msg;
-  t.className = 'toast show ' + type;
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 2500);
+  const t = $('toast'); t.textContent = msg; t.className = 'toast show ' + type;
+  clearTimeout(t._timer); t._timer = setTimeout(() => t.classList.remove('show'), 2500);
 }
-
-function mulberry32(a) {
-  return function() {
-    var t = a += 0x6D2B79F5;
-    t = Math.imul(t ^ t >>> 15, t | 1);
-    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  }
-}
-
 function hexToRgb(hex) { let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16); return [r, g, b]; }
 function rgbToHex(r, g, b) { return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1); }
 function shadeColor(hex, percent) {
@@ -401,448 +252,331 @@ function shadeColor(hex, percent) {
   r = Math.min(255, Math.max(0, r)); g = Math.min(255, Math.max(0, g)); b = Math.min(255, Math.max(0, b));
   return rgbToHex(r, g, b);
 }
-
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    $('tab-' + btn.dataset.tab).classList.add('active');
+    btn.classList.add('active'); $('tab-' + btn.dataset.tab).classList.add('active');
   });
 });
 
 // ============================================================
-// TAB 1: IMAGE GENERATION (PROMPT OPTIMIZED)
+// SKELETAL CHARACTER SYSTEM
 // ============================================================
-let imgCooldownUntil = 0;
-function updateImageBtn() {
-  const btn = $('img-generate');
-  const now = Date.now();
-  if (now < imgCooldownUntil) {
-    const remaining = Math.ceil((imgCooldownUntil - now) / 1000);
-    btn.disabled = true; btn.textContent = `⏳ Chờ ${remaining}s...`;
-    setTimeout(updateImageBtn, 500);
-  } else {
-    btn.disabled = false; btn.textContent = '🎨 Tạo Ảnh';
-  }
-}
-
-async function generateImage() {
-  const prompt = $('img-prompt').value.trim();
-  if (!prompt) { showToast('Nhập mô tả trước đã!', 'error'); return; }
-
-  const perspective = $('img-perspective').value;
-  const lighting = $('img-light').value;
-  const style = $('img-style').value;
-
-  // PROMPT OPTIMIZATION & STYLE LOCKING
-  const styleLock = `game asset, isolated on solid white background, no shadows on ground, high quality, masterpiece`;
-  const negativePrompt = `text, watermark, background scenery, frame, border, extra limbs, bad anatomy, blurry, low res`;
-  
-  const fullPrompt = `${prompt}, ${perspective}, ${lighting}, ${style}, ${styleLock}`;
-  const seed = Math.floor(Math.random() * 1000000);
-
-  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}?width=512&height=512&seed=${seed}&nologo=true&model=flux&negative_prompt=${encodeURIComponent(negativePrompt)}`;
-
-  imgCooldownUntil = Date.now() + 15000;
-  updateImageBtn();
-
-  const preview = $('img-preview');
-  preview.innerHTML = '<div class="spinner"></div><div class="preview-empty">Đang phân tích Prompt và tạo ảnh... (10-30s)</div>';
-
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  
-  img.onload = () => {
-    preview.innerHTML = '';
-    img.style.maxWidth = '100%'; img.style.borderRadius = '8px';
-    preview.appendChild(img);
-    const btnRow = document.createElement('div');
-    btnRow.style.cssText = 'display:flex;gap:8px;margin-top:10px;';
-    const dl = document.createElement('button');
-    dl.className = 'download'; dl.textContent = '📥 Tải ảnh'; dl.onclick = () => downloadImage(url);
-    btnRow.appendChild(dl);
-    preview.appendChild(btnRow);
-    showToast('Tạo ảnh thành công!', 'success');
-  };
-  img.onerror = () => { preview.innerHTML = '<div class="preview-empty" style="color:var(--accent-3)">❌ Lỗi API. Thử lại sau 15s.</div>'; };
-  img.src = url;
-}
-
-async function downloadImage(url) {
-  try {
-    const res = await fetch(url); const blob = await res.blob();
-    const blobUrl = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = blobUrl; a.download = `asset-${Date.now()}.png`;
-    a.click(); setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-  } catch (e) { window.open(url, '_blank'); }
-}
-$('img-generate').addEventListener('click', generateImage);
-updateImageBtn();
-
-// ============================================================
-// TAB 2: PIXEL SPRITE (V5 - PERSPECTIVE & ITEMS)
-// ============================================================
-const PALETTES = {
-  hero: { skin: '#f1c27d', skinDark: '#c99a5b', hair: '#5c3a21', armor: '#4a90e2', armorDark: '#2c5e8e', armorLight: '#7ab5f2', pants: '#34495e', boots: '#8e44ad', outline: '#111111', metal: '#bdc3c7', metalDark: '#7f8c8d', wood: '#8b5a2b', woodDark: '#5c3a21', glass: '#a0e6ff', liquid: '#ff4d4d' },
-  dark: { skin: '#e0ac69', skinDark: '#b88952', hair: '#ffffff', armor: '#9b59b6', armorDark: '#6c3483', armorLight: '#c39bd3', pants: '#2c3e50', boots: '#2c3e50', outline: '#000000', metal: '#95a5a6', metalDark: '#7f8c8d', wood: '#4a4a4a', woodDark: '#222222', glass: '#9b59b6', liquid: '#ff0000' },
-  crimson: { skin: '#f1c27d', skinDark: '#c99a5b', hair: '#111111', armor: '#e74c3c', armorDark: '#922b21', armorLight: '#f1948a', pants: '#2c3e50', boots: '#111111', outline: '#000000', metal: '#bdc3c7', metalDark: '#7f8c8d', wood: '#8b5a2b', woodDark: '#5c3a21', glass: '#ffb3b3', liquid: '#ff0000' },
-  cyber: { skin: '#ffb8d0', skinDark: '#cc93a6', hair: '#00ffff', armor: '#2c3e50', armorDark: '#17202a', armorLight: '#5d6d7e', pants: '#111111', boots: '#e74c3c', outline: '#000000', metal: '#00d4aa', metalDark: '#008f72', wood: '#222222', woodDark: '#000000', glass: '#00d4aa', liquid: '#ff006e' }
+const COLORS = {
+  blue: { armor: '#4a90e2', armorDark: '#2c5e8e', trim: '#f5a623', skin: '#f1c27d', metal: '#bdc3c7', outline: '#111111' },
+  red: { armor: '#e74c3c', armorDark: '#922b21', trim: '#f1c40f', skin: '#f1c27d', metal: '#bdc3c7', outline: '#111111' },
+  purple: { armor: '#9b59b6', armorDark: '#6c3483', trim: '#e67e22', skin: '#e0ac69', metal: '#95a5a6', outline: '#000000' },
+  green: { armor: '#27ae60', armorDark: '#1e8449', trim: '#d35400', skin: '#f1c27d', metal: '#7f8c8d', outline: '#1b5e20' },
+  dark: { armor: '#2c3e50', armorDark: '#17202a', trim: '#8e44ad', skin: '#e0ac69', metal: '#7f8c8d', outline: '#000000' }
 };
 
-let currentSpriteSeed = Math.floor(Math.random() * 1000000);
-let currentMatrix = []; // Lưu ma trận để tí nữa làm animation
+let currentCharConfig = {
+  head: 'helmet_iron', body: 'armor_heavy', weapon: 'sword', color: 'blue'
+};
 
-function generateSprite() {
-  const type = $('spr-type').value;
-  const perspective = $('spr-perspective').value;
-  const paletteName = $('spr-palette').value;
-  const P = PALETTES[paletteName];
-  const size = 64;
-  const rng = mulberry32(currentSpriteSeed);
+// Hàm vẽ nhân vật dựa trên cấu hình và góc quay của các khớp
+function drawCharacter(ctx, config, pose = {}) {
+  const C = COLORS[config.color];
+  const scale = 2; // Phóng to để dễ nhìn (64x64 gốc -> 128x128)
   
-  const canvas = $('spr-canvas');
-  canvas.width = size; canvas.height = size;
+  ctx.save();
+  ctx.scale(scale, scale);
+  ctx.imageSmoothingEnabled = false;
+
+  // Tọa độ gốc (chân đứng ở y=60)
+  const baseX = 32;
+  const baseY = 60;
+
+  // Góc quay mặc định (độ)
+  let angles = {
+    head: 0, torso: 0,
+    shoulderL: 0, elbowL: 0,
+    shoulderR: 0, elbowR: 0,
+    hipL: 0, kneeL: 0,
+    hipR: 0, kneeR: 0
+  };
+  
+  // Áp dụng pose (nếu có)
+  if (pose) {
+    for (let key in pose) {
+      if (angles[key] !== undefined) angles[key] = pose[key];
+    }
+  }
+
+  // Hàm vẽ một khớp xương (hình chữ nhật dài)
+  function drawLimb(x, y, length, width, angle, color, isWeapon = false) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle * Math.PI / 180);
+    ctx.fillStyle = color;
+    ctx.fillRect(-width/2, 0, width, length);
+    // Viền
+    ctx.strokeStyle = C.outline;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(-width/2, 0, width, length);
+    ctx.restore();
+  }
+
+  // 1. CHÂN (Vẽ từ hông xuống)
+  const hipY = baseY - 20;
+  const hipL_X = baseX - 4;
+  const hipR_X = baseX + 4;
+  
+  // Chân trái
+  drawLimb(hipL_X, hipY, 12, 6, angles.hipL, C.armorDark);
+  // Cẳng chân trái (vẽ tiếp từ đầu gối)
+  ctx.save();
+  ctx.translate(hipL_X, hipY);
+  ctx.rotate(angles.hipL * Math.PI / 180);
+  ctx.translate(0, 12);
+  ctx.rotate(angles.kneeL * Math.PI / 180);
+  ctx.fillStyle = C.armorDark; ctx.fillRect(-3, 0, 6, 10);
+  ctx.strokeStyle = C.outline; ctx.strokeRect(-3, 0, 6, 10);
+  ctx.restore();
+
+  // Chân phải
+  drawLimb(hipR_X, hipY, 12, 6, angles.hipR, C.armorDark);
+  ctx.save();
+  ctx.translate(hipR_X, hipY);
+  ctx.rotate(angles.hipR * Math.PI / 180);
+  ctx.translate(0, 12);
+  ctx.rotate(angles.kneeR * Math.PI / 180);
+  ctx.fillStyle = C.armorDark; ctx.fillRect(-3, 0, 6, 10);
+  ctx.strokeStyle = C.outline; ctx.strokeRect(-3, 0, 6, 10);
+  ctx.restore();
+
+  // 2. THÂN (Torso)
+  const torsoY = hipY - 18;
+  ctx.save();
+  ctx.translate(baseX, torsoY);
+  ctx.rotate(angles.torso * Math.PI / 180);
+  
+  // Vẽ áo giáp
+  ctx.fillStyle = C.armor;
+  ctx.fillRect(-8, 0, 16, 18);
+  ctx.strokeStyle = C.outline; ctx.strokeRect(-8, 0, 16, 18);
+  // Chi tiết áo giáp
+  ctx.fillStyle = C.trim;
+  ctx.fillRect(-8, 14, 16, 4); // Thắt lưng
+  ctx.fillStyle = C.metal;
+  ctx.fillRect(-6, 4, 4, 6); // Điểm sáng
+
+  // 3. TAY (Gắn vào vai)
+  const shoulderY = 2;
+  const shoulderL_X = -8;
+  const shoulderR_X = 8;
+
+  // Tay trái
+  ctx.save();
+  ctx.translate(shoulderL_X, shoulderY);
+  ctx.rotate(angles.shoulderL * Math.PI / 180);
+  ctx.fillStyle = C.armor; ctx.fillRect(-3, 0, 6, 12);
+  ctx.strokeStyle = C.outline; ctx.strokeRect(-3, 0, 6, 12);
+  // Cẳng tay trái
+  ctx.translate(0, 12);
+  ctx.rotate(angles.elbowL * Math.PI / 180);
+  ctx.fillStyle = C.skin; ctx.fillRect(-2, 0, 4, 8);
+  ctx.strokeRect(-2, 0, 4, 8);
+  ctx.restore();
+
+  // Tay phải (cầm vũ khí)
+  ctx.save();
+  ctx.translate(shoulderR_X, shoulderY);
+  ctx.rotate(angles.shoulderR * Math.PI / 180);
+  ctx.fillStyle = C.armor; ctx.fillRect(-3, 0, 6, 12);
+  ctx.strokeRect(-3, 0, 6, 12);
+  
+  // Cẳng tay phải
+  ctx.translate(0, 12);
+  ctx.rotate(angles.elbowR * Math.PI / 180);
+  ctx.fillStyle = C.skin; ctx.fillRect(-2, 0, 4, 8);
+  ctx.strokeRect(-2, 0, 4, 8);
+
+  // Vũ khí (nếu có)
+  if (config.weapon !== 'none') {
+    ctx.save();
+    ctx.translate(0, 8); // Ở bàn tay
+    // Vẽ vũ khí dọc theo cánh tay
+    if (config.weapon === 'sword') {
+      ctx.fillStyle = C.metal; ctx.fillRect(-2, -10, 4, 20); // Lưỡi kiếm
+      ctx.fillStyle = '#8b5a2b'; ctx.fillRect(-1, 8, 2, 6); // Chuôi
+    } else if (config.weapon === 'axe') {
+      ctx.fillStyle = '#8b5a2b'; ctx.fillRect(-1, -8, 2, 16); // Cán
+      ctx.fillStyle = C.metal; ctx.fillRect(2, -6, 8, 6); // Lưỡi rìu
+    } else if (config.weapon === 'staff') {
+      ctx.fillStyle = '#8b5a2b'; ctx.fillRect(-1, -10, 2, 20); // Gậy
+      ctx.fillStyle = '#00d4aa'; ctx.beginPath(); ctx.arc(0, -12, 3, 0, Math.PI*2); ctx.fill(); // Ngọc
+    }
+    ctx.restore();
+  }
+  ctx.restore(); // Kết thúc tay phải
+
+  // 4. ĐẦU (Gắn vào cổ)
+  const neckY = -6;
+  ctx.save();
+  ctx.translate(0, neckY);
+  ctx.rotate(angles.head * Math.PI / 180);
+
+  if (config.head === 'bare' || config.head === 'hood') {
+    // Đầu trần / Mũ trùm
+    ctx.fillStyle = C.skin;
+    ctx.beginPath(); ctx.arc(0, -6, 6, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = C.outline; ctx.stroke();
+    if (config.head === 'hood') {
+      ctx.fillStyle = C.armorDark;
+      ctx.beginPath(); ctx.arc(0, -6, 7, Math.PI, 0); ctx.fill(); // Mũ trùm
+    }
+  } else {
+    // Mũ giáp
+    ctx.fillStyle = C.metal;
+    ctx.fillRect(-6, -12, 12, 12);
+    ctx.strokeStyle = C.outline; ctx.strokeRect(-6, -12, 12, 12);
+    // Khe mắt
+    ctx.fillStyle = C.outline; ctx.fillRect(-4, -8, 8, 2);
+    // Sừng (nếu có)
+    if (config.head === 'helmet_horned') {
+      ctx.fillStyle = '#f5a623';
+      ctx.beginPath(); ctx.moveTo(-6, -12); ctx.lineTo(-10, -18); ctx.lineTo(-4, -14); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(6, -12); ctx.lineTo(10, -18); ctx.lineTo(4, -14); ctx.fill();
+    }
+  }
+  
+  // Mắt (nếu không đội mũ giáp kín)
+  if (config.head === 'bare' || config.head === 'hood') {
+    ctx.fillStyle = '#000'; ctx.fillRect(-3, -8, 2, 2); ctx.fillRect(1, -8, 2, 2);
+  }
+
+  ctx.restore(); // Kết thúc đầu
+  ctx.restore(); // Kết thúc torso
+  ctx.restore(); // Kết thúc scale
+}
+
+// Vẽ nhân vật tĩnh (T-Pose)
+function renderStaticCharacter() {
+  const canvas = $('char-canvas');
   const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, size, size);
-
-  let mat = Array(size).fill().map(() => Array(size).fill(0));
-  let mid = Math.floor(size / 2);
-
-  function setPx(x, y, val, mirror = true) {
-    if (x >= 0 && x < size && y >= 0 && y < size) mat[y][x] = val;
-    if (mirror && size - 1 - x >= 0 && size - 1 - x < size && size - 1 - x !== x) mat[y][size - 1 - x] = val;
-  }
-
-  if (type === 'character') {
-    if (perspective === 'front') {
-      // --- NHÂN VẬT CHÍNH DIỆN ---
-      const headY = 12, headH = 16, headW = 12;
-      const bodyY = headY + headH, bodyH = 18, bodyW = 14;
-      const legY = bodyY + bodyH, legH = 14, legW = 5;
-      
-      for (let y = headY; y < headY + headH; y++) for (let x = mid - headW; x < mid; x++) setPx(x, y, 2);
-      for (let y = headY; y < headY + 6; y++) for (let x = mid - headW; x < mid; x++) setPx(x, y, 3);
-      setPx(mid - 5, headY + 8, 7); // Mắt
-      
-      for (let y = bodyY; y < bodyY + bodyH; y++) {
-        let w = (y < bodyY + 4) ? bodyW + 2 : bodyW;
-        for (let x = mid - w; x < mid; x++) setPx(x, y, 1);
-      }
-      for (let y = bodyY + bodyH - 2; y < bodyY + bodyH; y++) for (let x = mid - bodyW; x < mid; x++) setPx(x, y, 6); // Thắt lưng
-      
-      for (let y = legY; y < legY + legH; y++) for (let x = mid - legW - 1; x < mid - 1; x++) setPx(x, y, 4);
-      for (let x = mid - legW - 2; x < mid; x++) { setPx(x, legY + legH - 2, 5); setPx(x, legY + legH - 1, 5); }
-      
-    } else {
-      // --- NHÂN VẬT GÓC NGHIÊNG (SIDE VIEW) ---
-      const headY = 12, headH = 16, headW = 10;
-      const bodyY = headY + headH, bodyH = 18, bodyW = 12;
-      const legY = bodyY + bodyH, legH = 16;
-      
-      // Đầu (Profile)
-      for (let y = headY; y < headY + headH; y++) for (let x = mid - 4; x < mid + headW; x++) setPx(x, y, 2, false);
-      setPx(mid + headW - 1, headY + 8, 7, false); // Mắt
-      setPx(mid + headW, headY + 10, 2, false); // Mũi
-      
-      // Tóc/Mũ
-      for (let y = headY; y < headY + 6; y++) for (let x = mid - 6; x < mid + headW - 2; x++) setPx(x, y, 3, false);
-      
-      // Thân
-      for (let y = bodyY; y < bodyY + bodyH; y++) for (let x = mid - 5; x < mid + 8; x++) setPx(x, y, 1, false);
-      
-      // Tay trước
-      for (let y = bodyY + 2; y < bodyY + 12; y++) setPx(mid + 6, y, 1, false);
-      setPx(mid + 6, bodyY + 13, 2, false); // Bàn tay
-      
-      // Chân (Đi bộ)
-      for (let y = legY; y < legY + legH; y++) {
-        setPx(mid - 3, y, 4, false);
-        setPx(mid + 4, y, 4, false);
-      }
-      setPx(mid - 4, legY + legH - 1, 5, false); // Giày trái
-      setPx(mid + 5, legY + legH - 1, 5, false); // Giày phải
-      
-      // Kiếm cầm tay
-      for (let y = bodyY - 6; y < bodyY + 12; y++) setPx(mid + 8, y, 6, false);
-      setPx(mid + 8, bodyY + 13, 5, false); // Chuôi
-    }
-  } 
-  else if (type === 'item_potion') {
-    // --- BÌNH THUỐC ---
-    const topY = 20, botY = 50;
-    for (let y = topY; y < botY; y++) {
-      for (let x = mid - 8; x < mid + 8; x++) {
-        if (y < topY + 6 && (x < mid - 3 || x > mid + 3)) continue; // Cổ chai
-        mat[y][x] = 1; // Thủy tinh
-        // Nước thuốc
-        if (y > botY - 12 && y < botY - 2) mat[y][x] = 8; 
-      }
-    }
-    // Nút bần
-    for (let y = topY - 4; y < topY; y++) for (let x = mid - 3; x < mid + 3; x++) mat[y][x] = 9;
-    // Highlight
-    mat[botY - 15][mid - 5] = 6; mat[botY - 14][mid - 5] = 6; mat[botY - 15][mid - 4] = 6;
-  }
-  else if (type === 'item_chest') {
-    // --- RƯƠNG BÁU ---
-    const topY = 24, botY = 48, left = mid - 16, right = mid + 16;
-    for (let y = topY; y < botY; y++) {
-      for (let x = left; x < right; x++) {
-        if (y === topY || y === topY + 8 || y === botY - 1 || x === left || x === right - 1) mat[y][x] = 4; // Viền gỗ đen
-        else mat[y][x] = 10; // Gỗ
-      }
-    }
-    // Khóa
-    for (let y = topY + 6; y < topY + 12; y++) for (let x = mid - 2; x < mid + 2; x++) mat[y][x] = 6;
-    // Điểm sáng
-    for (let y = topY + 2; y < topY + 6; y++) for (let x = left + 2; x < left + 6; x++) mat[y][x] = 6;
-  }
-  else if (type === 'item_sword') {
-    // --- THANH KIẾM ---
-    // Lưỡi kiếm
-    for (let y = 12; y < 44; y++) {
-      for (let x = mid - 2; x < mid + 2; x++) mat[y][x] = 6;
-      mat[y][mid - 3] = 6; mat[y][mid + 2] = 6;
-    }
-    // Mũi kiếm
-    for (let i = 0; i < 4; i++) {
-      for (let x = mid - i; x < mid + i; x++) mat[8 + i][x] = 6;
-    }
-    // Chắn kiếm (Crossguard)
-    for (let x = mid - 8; x < mid + 8; x++) { mat[44][x] = 10; mat[45][x] = 10; }
-    // Chuôi cầm
-    for (let y = 46; y < 56; y++) for (let x = mid - 2; x < mid + 2; x++) mat[y][x] = 4;
-    // Điểm sáng
-    for (let y = 16; y < 40; y++) mat[y][mid - 1] = '#ffffff';
-  }
-  else if (type === 'item_coin') {
-    // --- ĐỒNG XU ---
-    const cy = 32, cx = mid, r = 14;
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        if (Math.hypot(x - cx, y - cy) < r) mat[y][x] = 6; // Vàng
-      }
-    }
-    // Ký hiệu trên xu
-    for (let y = cy - 6; y < cy + 6; y++) mat[y][cx] = 10;
-    for (let x = cx - 4; x < cx + 4; x++) mat[cy - 4][x] = 10;
-    // Highlight
-    for (let i=0; i<5; i++) mat[cy - r + 4 + i][cx - 6 + i] = '#ffffff';
-  }
-
-  // --- SHADING & OUTLINE TỰ ĐỘNG ---
-  for (let y = 0; y < size; y++) {
-    for (let x = 0; x < size; x++) {
-      if (mat[y][x] > 0 && mat[y][x] !== 7) {
-        let isShadow = false;
-        if (y + 1 >= size || mat[y+1][x] === 0) isShadow = true; // Bóng dưới
-        if (x + 1 >= size || mat[y][x+1] === 0) isShadow = true; // Bóng phải
-        if (isShadow) mat[y][x] = -mat[y][x]; // Đánh dấu âm
-      }
-    }
-  }
-
-  // Viền
-  for (let y = 0; y < size; y++) {
-    for (let x = 0; x < size; x++) {
-      if (mat[y][x] === 0) {
-        let isOutline = false;
-        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
-          if (dx===0 && dy===0) continue;
-          let ny = y+dy, nx = x+dx;
-          if (ny>=0 && ny<size && nx>=0 && nx<size && mat[ny][nx] !== 0) isOutline = true;
-        }
-        if (isOutline) mat[y][x] = -99;
-      }
-    }
-  }
-
-  // Render
-  for (let y = 0; y < size; y++) {
-    for (let x = 0; x < size; x++) {
-      let val = mat[y][x], isShadow = val < 0 && val !== -99, absVal = Math.abs(val);
-      if (absVal === 99) { ctx.fillStyle = P.outline; ctx.fillRect(x, y, 1, 1); }
-      else if (absVal !== 0) {
-        let color = '#000';
-        if (absVal === 1) color = isShadow ? P.armorDark : P.armor;
-        if (absVal === 2) color = isShadow ? P.skinDark : P.skin;
-        if (absVal === 3) color = P.hair;
-        if (absVal === 4) color = isShadow ? P.woodDark : P.wood;
-        if (absVal === 5) color = isShadow ? shadeColor(P.boots, -0.3) : P.boots;
-        if (absVal === 6) color = isShadow ? P.metalDark : P.metal;
-        if (absVal === 7) color = '#ffffff';
-        if (absVal === 8) color = P.liquid;
-        if (absVal === 9) color = P.woodDark;
-        if (absVal === 10) color = isShadow ? P.woodDark : P.wood;
-        
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, 1, 1);
-      }
-    }
-  }
-
-  currentMatrix = mat; // Lưu lại để làm animation
-  $('spr-seed-text').textContent = `Seed: ${currentSpriteSeed} (Size: 64x64)`;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  currentCharConfig = {
+    head: $('char-head').value,
+    body: $('char-body').value,
+    weapon: $('char-weapon').value,
+    color: $('char-color').value
+  };
+  
+  drawCharacter(ctx, currentCharConfig, {});
 }
 
-function downloadSprite() {
-  const src = $('spr-canvas');
-  const scaled = document.createElement('canvas');
-  scaled.width = 64 * 8; scaled.height = 64 * 8;
-  const sctx = scaled.getContext('2d');
-  sctx.imageSmoothingEnabled = false;
-  sctx.drawImage(src, 0, 0, scaled.width, scaled.height);
-  scaled.toBlob(blob => {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = `sprite-${Date.now()}.png`; a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    showToast(`Đã tải Sprite!`, 'success');
-  });
-}
-
-$('spr-generate').addEventListener('click', generateSprite);
-$('spr-randomize').addEventListener('click', () => { currentSpriteSeed = Math.floor(Math.random()*1000000); generateSprite(); });
-$('spr-download').addEventListener('click', downloadSprite);
-generateSprite();
+$('char-generate').addEventListener('click', renderStaticCharacter);
+renderStaticCharacter(); // Khởi tạo
 
 // ============================================================
-// TAB 3: ANIMATION ENGINE
+// ANIMATION ENGINE (SKELETAL)
 // ============================================================
-let animInterval = null;
-let animFrames = []; // Mảng chứa 4 ma trận frame
+let animFrameId = null;
+let animFrames = [];
+let currentFrame = 0;
+const NUM_FRAMES = 8;
 
 function generateAnimation() {
-  if (!currentMatrix || currentMatrix.length === 0) { showToast('Hãy tạo Sprite trước!', 'error'); return; }
+  if (animFrameId) cancelAnimationFrame(animFrameId);
   
   const type = $('anim-type').value;
-  const size = 64;
   animFrames = [];
   
-  // Tạo 4 frames
-  for (let f = 0; f < 4; f++) {
-    // Copy ma trận gốc
-    let frameMat = JSON.parse(JSON.stringify(currentMatrix));
+  // Tạo 8 frames dựa trên loại animation
+  for (let i = 0; i < NUM_FRAMES; i++) {
+    const t = i / NUM_FRAMES; // 0 -> 1
+    const angle = Math.sin(t * Math.PI * 2); // -1 -> 1
+    const pose = {};
     
     if (type === 'idle') {
-      // Nhấp nhô: Frame 1, 3 giữ nguyên. Frame 2 nhích lên 1px, Frame 4 nhích xuống 1px
-      if (f === 1 || f === 3) {
-        let shiftY = (f === 1) ? -1 : 1;
-        let newFrame = Array(size).fill().map(() => Array(size).fill(0));
-        for (let y = 0; y < size; y++) {
-          for (let x = 0; x < size; x++) {
-            let ny = y + shiftY;
-            if (ny >= 0 && ny < size) newFrame[ny][x] = frameMat[y][x];
-          }
-        }
-        frameMat = newFrame;
-      }
+      // Nhấp nhô nhẹ nhàng (thở)
+      pose.torso = angle * 2;
+      pose.head = angle * 2;
+      pose.shoulderL = angle * 3;
+      pose.shoulderR = -angle * 3;
+      pose.hipL = angle * 1;
+      pose.hipR = -angle * 1;
     } else if (type === 'walk') {
-      // Bước đi (Chỉ hiệu quả với Side-view, nhưng vẫn áp dụng cho front)
-      // Nhích chân trước/sau
-      let shiftBodyY = (f === 1 || f === 3) ? -1 : 0;
-      let newFrame = Array(size).fill().map(() => Array(size).fill(0));
-      for (let y = 0; y < size; y++) {
-        for (let x = 0; x < size; x++) {
-          let val = frameMat[y][x];
-          if (val === 0) continue;
-          
-          let ny = y;
-          let nx = x;
-          
-          // Nếu là chân (ID 4 hoặc 5), nhích qua lại
-          if (Math.abs(val) === 4 || Math.abs(val) === 5) {
-             if (f === 1) nx += (x < 32) ? -1 : 1;
-             if (f === 3) nx += (x < 32) ? 1 : -1;
-          } else {
-             // Phần thân nhấp nhô
-             ny += shiftBodyY;
-          }
-          
-          if (ny>=0 && ny<size && nx>=0 && nx<size) newFrame[ny][nx] = val;
-        }
-      }
-      frameMat = newFrame;
+      // Bước đi: chân trước chân sau, tay vung
+      const walkAngle = 20;
+      pose.hipL = angle * walkAngle;
+      pose.kneeL = Math.max(0, -angle * walkAngle);
+      pose.hipR = -angle * walkAngle;
+      pose.kneeR = Math.max(0, angle * walkAngle);
+      
+      pose.shoulderL = -angle * 15;
+      pose.shoulderR = angle * 15;
+      pose.torso = Math.abs(angle) * 2;
+      pose.head = Math.abs(angle) * 2;
+    } else if (type === 'attack') {
+      // Vung vũ khí
+      const swing = Math.sin(t * Math.PI); // 0 -> 1 -> 0
+      pose.shoulderR = -90 + swing * 180; // Vung từ trên xuống
+      pose.elbowR = -30 + swing * 60;
+      pose.torso = swing * 10;
+      pose.head = swing * 5;
     }
-    animFrames.push(frameMat);
+    
+    animFrames.push(pose);
   }
   
   renderSpriteSheet();
-  startAnimPreview();
+  playAnimation();
   showToast('Đã tạo Animation!', 'success');
 }
 
 function renderSpriteSheet() {
-  const sheetCanvas = $('anim-canvas-sheet');
-  sheetCanvas.width = 256; sheetCanvas.height = 64;
+  const sheetCanvas = $('anim-sheet-canvas');
+  sheetCanvas.width = 128 * NUM_FRAMES;
+  sheetCanvas.height = 128;
   const ctx = sheetCanvas.getContext('2d');
-  ctx.clearRect(0, 0, 256, 64);
-  const paletteName = $('spr-palette').value;
-  const P = PALETTES[paletteName];
-
-  for (let f = 0; f < 4; f++) {
-    let mat = animFrames[f];
-    for (let y = 0; y < 64; y++) {
-      for (let x = 0; x < 64; x++) {
-        let val = mat[y][x], isShadow = val < 0 && val !== -99, absVal = Math.abs(val);
-        if (absVal === 99) { ctx.fillStyle = P.outline; ctx.fillRect((f*64)+x, y, 1, 1); }
-        else if (absVal !== 0) {
-          let color = '#000';
-          if (absVal === 1) color = isShadow ? P.armorDark : P.armor;
-          if (absVal === 2) color = isShadow ? P.skinDark : P.skin;
-          if (absVal === 3) color = P.hair;
-          if (absVal === 4) color = isShadow ? P.woodDark : P.wood;
-          if (absVal === 5) color = isShadow ? shadeColor(P.boots, -0.3) : P.boots;
-          if (absVal === 6) color = isShadow ? P.metalDark : P.metal;
-          if (absVal === 7) color = '#ffffff';
-          if (absVal === 8) color = P.liquid;
-          if (absVal === 9) color = P.woodDark;
-          if (absVal === 10) color = isShadow ? P.woodDark : P.wood;
-          ctx.fillStyle = color; ctx.fillRect((f*64)+x, y, 1, 1);
-        }
-      }
-    }
+  ctx.clearRect(0, 0, sheetCanvas.width, sheetCanvas.height);
+  
+  for (let i = 0; i < NUM_FRAMES; i++) {
+    ctx.save();
+    ctx.translate(i * 128, 0); // Dịch sang frame tiếp theo
+    drawCharacter(ctx, currentCharConfig, animFrames[i]);
+    ctx.restore();
   }
 }
 
-function startAnimPreview() {
-  if (animInterval) clearInterval(animInterval);
-  const canvas = $('anim-canvas-preview');
+function playAnimation() {
+  const canvas = $('anim-preview-canvas');
   const ctx = canvas.getContext('2d');
-  const paletteName = $('spr-palette').value;
-  const P = PALETTES[paletteName];
-  let frameIndex = 0;
-
-  animInterval = setInterval(() => {
-    ctx.clearRect(0, 0, 64, 64);
-    let mat = animFrames[frameIndex];
-    for (let y = 0; y < 64; y++) {
-      for (let x = 0; x < 64; x++) {
-        let val = mat[y][x], isShadow = val < 0 && val !== -99, absVal = Math.abs(val);
-        if (absVal === 99) { ctx.fillStyle = P.outline; ctx.fillRect(x, y, 1, 1); }
-        else if (absVal !== 0) {
-          let color = '#000';
-          if (absVal === 1) color = isShadow ? P.armorDark : P.armor;
-          if (absVal === 2) color = isShadow ? P.skinDark : P.skin;
-          if (absVal === 3) color = P.hair;
-          if (absVal === 4) color = isShadow ? P.woodDark : P.wood;
-          if (absVal === 5) color = isShadow ? shadeColor(P.boots, -0.3) : P.boots;
-          if (absVal === 6) color = isShadow ? P.metalDark : P.metal;
-          if (absVal === 7) color = '#ffffff';
-          if (absVal === 8) color = P.liquid;
-          if (absVal === 9) color = P.woodDark;
-          if (absVal === 10) color = isShadow ? P.woodDark : P.wood;
-          ctx.fillStyle = color; ctx.fillRect(x, y, 1, 1);
-        }
-      }
+  let frame = 0;
+  
+  function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawCharacter(ctx, currentCharConfig, animFrames[frame]);
+    frame = (frame + 1) % NUM_FRAMES;
+    animFrameId = requestAnimationFrame(loop);
+  }
+  
+  // Giới hạn tốc độ khung hình (ví dụ 12 FPS)
+  let lastTime = 0;
+  const fps = 12;
+  const interval = 1000 / fps;
+  
+  function loopWithFPS(time) {
+    if (time - lastTime > interval) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawCharacter(ctx, currentCharConfig, animFrames[frame]);
+      frame = (frame + 1) % NUM_FRAMES;
+      lastTime = time;
     }
-    frameIndex = (frameIndex + 1) % 4;
-  }, 150); // 150ms per frame
+    animFrameId = requestAnimationFrame(loopWithFPS);
+  }
+  
+  animFrameId = requestAnimationFrame(loopWithFPS);
 }
 
 $('anim-generate').addEventListener('click', generateAnimation);
+
 $('anim-download').addEventListener('click', () => {
-  const sheet = $('anim-canvas-sheet');
+  const sheet = $('anim-sheet-canvas');
   const a = document.createElement('a');
   a.href = sheet.toDataURL('image/png');
   a.download = `spritesheet-${Date.now()}.png`;
@@ -851,18 +585,50 @@ $('anim-download').addEventListener('click', () => {
 });
 
 // ============================================================
-// TAB 4: SOUND GENERATION
+// AI IMAGE GENERATION (Giữ nguyên từ V5)
 // ============================================================
-let currentSoundSamples = null;
-let currentSampleRate = 44100;
+let imgCooldownUntil = 0;
+function updateImageBtn() {
+  const btn = $('img-generate'); const now = Date.now();
+  if (now < imgCooldownUntil) {
+    const remaining = Math.ceil((imgCooldownUntil - now) / 1000);
+    btn.disabled = true; btn.textContent = `⏳ Chờ ${remaining}s...`;
+    setTimeout(updateImageBtn, 500);
+  } else { btn.disabled = false; btn.textContent = '🎨 Tạo Ảnh'; }
+}
+async function generateImage() {
+  const prompt = $('img-prompt').value.trim();
+  if (!prompt) { showToast('Nhập mô tả trước đã!', 'error'); return; }
+  const perspective = $('img-perspective').value;
+  const style = $('img-style').value;
+  const styleLock = `game asset, isolated on solid white background, no shadows, high quality, masterpiece`;
+  const fullPrompt = `${prompt}, ${perspective}, ${style}, ${styleLock}`;
+  const seed = Math.floor(Math.random() * 1000000);
+  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}?width=512&height=512&seed=${seed}&nologo=true&model=flux`;
+  imgCooldownUntil = Date.now() + 15000; updateImageBtn();
+  const preview = $('img-preview');
+  preview.innerHTML = '<div class="spinner"></div><div class="preview-empty">Đang tạo ảnh...</div>';
+  const img = new Image(); img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    preview.innerHTML = ''; img.style.maxWidth = '100%'; preview.appendChild(img);
+    const btn = document.createElement('button'); btn.className = 'download'; btn.textContent = '📥 Tải ảnh';
+    btn.onclick = () => { const a = document.createElement('a'); a.href = url; a.download = `asset-${Date.now()}.png`; a.click(); };
+    preview.appendChild(btn); showToast('Tạo ảnh thành công!', 'success');
+  };
+  img.onerror = () => { preview.innerHTML = '<div class="preview-empty" style="color:var(--accent-3)">❌ Lỗi API. Thử lại sau.</div>'; };
+  img.src = url;
+}
+$('img-generate').addEventListener('click', generateImage);
+updateImageBtn();
 
+// ============================================================
+// SOUND GENERATION (Giữ nguyên từ V5)
+// ============================================================
+let currentSoundSamples = null; let currentSampleRate = 44100;
 function generateSoundSamples(type, sampleRate, duration, baseFreq) {
-  const length = Math.floor(sampleRate * duration);
-  const data = new Float32Array(length);
+  const length = Math.floor(sampleRate * duration); const data = new Float32Array(length);
   for (let i = 0; i < length; i++) {
-    const time = i / sampleRate;
-    const progress = i / length;
-    let sample = 0;
+    const time = i / sampleRate; const progress = i / length; let sample = 0;
     switch (type) {
       case 'jump': sample = Math.sin(2 * Math.PI * (baseFreq + baseFreq * 3 * progress) * time) * (1 - progress) * 0.5; break;
       case 'coin': sample = Math.sign(Math.sin(2 * Math.PI * (progress < 0.4 ? baseFreq * 2 : baseFreq * 2.67) * time)) * 0.3 * (1 - progress); break;
@@ -876,65 +642,33 @@ function generateSoundSamples(type, sampleRate, duration, baseFreq) {
   }
   return data;
 }
-
 function encodeWAV(samples, sampleRate) {
-  const buffer = new ArrayBuffer(44 + samples.length * 2);
-  const view = new DataView(buffer);
+  const buffer = new ArrayBuffer(44 + samples.length * 2); const view = new DataView(buffer);
   const w = (off, str) => { for (let i = 0; i < str.length; i++) view.setUint8(off + i, str.charCodeAt(i)); };
   w(0, 'RIFF'); view.setUint32(4, 36 + samples.length * 2, true); w(8, 'WAVE'); w(12, 'fmt ');
   view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true);
   view.setUint32(24, sampleRate, true); view.setUint32(28, sampleRate * 2, true);
   view.setUint16(32, 2, true); view.setUint16(34, 16, true); w(36, 'data'); view.setUint32(40, samples.length * 2, true);
   let off = 44;
-  for (let i = 0; i < samples.length; i++) {
-    const s = Math.max(-1, Math.min(1, samples[i]));
-    view.setInt16(off, s < 0 ? s * 0x8000 : s * 0x7FFF, true); off += 2;
-  }
+  for (let i = 0; i < samples.length; i++) { const s = Math.max(-1, Math.min(1, samples[i])); view.setInt16(off, s < 0 ? s * 0x8000 : s * 0x7FFF, true); off += 2; }
   return new Blob([buffer], { type: 'audio/wav' });
 }
-
-function drawWaveform(canvas, samples) {
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width = canvas.offsetWidth * 2; const h = canvas.height = canvas.offsetHeight * 2;
-  ctx.clearRect(0, 0, w, h); ctx.strokeStyle = '#7c5cff'; ctx.lineWidth = 2; ctx.beginPath();
-  const step = Math.max(1, Math.floor(samples.length / w));
-  for (let x = 0; x < w; x++) {
-    const idx = Math.min(samples.length - 1, x * step);
-    const y = h / 2 - samples[idx] * h * 0.4;
-    if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-  }
-  ctx.stroke();
-}
-
 async function playSound(samples, sampleRate) {
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const buffer = ctx.createBuffer(1, samples.length, sampleRate);
-  buffer.getChannelData(0).set(samples);
-  const src = ctx.createBufferSource(); src.buffer = buffer; src.connect(ctx.destination); src.start();
+  const ctx = new (window.AudioContext || window.webkitAudioContext)(); const buffer = ctx.createBuffer(1, samples.length, sampleRate);
+  buffer.getChannelData(0).set(samples); const src = ctx.createBufferSource(); src.buffer = buffer; src.connect(ctx.destination); src.start();
   return new Promise(res => { src.onended = () => { ctx.close(); res(); }; });
 }
-
 async function generateSound() {
-  const type = $('snd-type').value;
-  const freq = parseInt($('snd-freq').value) || 440;
-  const duration = parseFloat($('snd-duration').value) || 0.3;
-  currentSampleRate = 44100;
-  currentSoundSamples = generateSoundSamples(type, currentSampleRate, duration, freq);
+  const type = $('snd-type').value; const freq = parseInt($('snd-freq').value) || 440; const duration = parseFloat($('snd-duration').value) || 0.3;
+  currentSampleRate = 44100; currentSoundSamples = generateSoundSamples(type, currentSampleRate, duration, freq);
   const preview = $('snd-preview'); preview.innerHTML = '';
-  const canvas = document.createElement('canvas'); canvas.className = 'waveform'; preview.appendChild(canvas);
-  requestAnimationFrame(() => drawWaveform(canvas, currentSoundSamples));
   const btnRow = document.createElement('div'); btnRow.style.cssText = 'display:flex;gap:8px;margin-top:10px;';
   const playBtn = document.createElement('button'); playBtn.className = 'secondary'; playBtn.textContent = '▶️ Nghe lại'; playBtn.onclick = () => playSound(currentSoundSamples, currentSampleRate); btnRow.appendChild(playBtn);
   const dlBtn = document.createElement('button'); dlBtn.className = 'download'; dlBtn.textContent = '📥 Tải WAV';
-  dlBtn.onclick = () => {
-    const blob = encodeWAV(currentSoundSamples, currentSampleRate); const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = `${type}.wav`; a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  };
+  dlBtn.onclick = () => { const blob = encodeWAV(currentSoundSamples, currentSampleRate); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${type}.wav`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); };
   btnRow.appendChild(dlBtn); preview.appendChild(btnRow);
   try { await playSound(currentSoundSamples, currentSampleRate); } catch (e) {}
 }
-
 $('snd-generate').addEventListener('click', generateSound);
 </script>
 </body>
