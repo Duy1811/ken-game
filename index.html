@@ -320,43 +320,46 @@ canvas {
 <!-- ============ TAB SPRITE ============ -->
 <section id="tab-sprite" class="tab-content">
   <div class="note info">
-    🎨 <strong>Bản nâng cấp V2:</strong> Sprite giờ đây có hình khối nhân vật, viền (outline), và đổ bóng (shading). Thuật toán tự động tạo "Seed" để bạn có thể tạo lại chính xác mẫu sprite mình thích!
+    🎨 <strong>Bản nâng cấp V3 (Anatomy Engine):</strong> Sprite giờ đây được vẽ theo cấu trúc (Đầu, Mắt, Thân, Chân, Vũ khí). Tự động đổ bóng và tạo viền chuẩn pixel art!
   </div>
   <div class="row-3">
     <div class="form-group">
       <label>Kích thước (pixel)</label>
       <select id="spr-size">
-        <option value="8">8×8</option>
-        <option value="16" selected>16×16</option>
-        <option value="32">32×32</option>
-        <option value="64">64×64</option>
+        <option value="16">16×16 (Cổ điển)</option>
+        <option value="32" selected>32×32 (Chi tiết)</option>
+        <option value="64">64×64 (Rất chi tiết)</option>
       </select>
     </div>
     <div class="form-group">
       <label>Loại</label>
       <select id="spr-type">
-        <option value="character" selected>Nhân vật (Humanoid)</option>
-        <option value="enemy">Kẻ thù (Beast)</option>
-        <option value="item">Vật phẩm (Gem)</option>
-        <option value="tile">Ô đất (Tile)</option>
+        <option value="character" selected>Nhân vật (Anh hùng)</option>
+        <option value="enemy">Quái vật (Beast)</option>
+        <option value="item">Vật phẩm (Bình thuốc/Rương)</option>
       </select>
     </div>
     <div class="form-group">
       <label>Bảng màu</label>
       <select id="spr-palette">
-        <option value="gameboy">Gameboy (xanh lá)</option>
-        <option value="nes" selected>NES</option>
-        <option value="pico8">PICO-8</option>
-        <option value="pastel">Pastel</option>
-        <option value="cyberpunk">Cyberpunk</option>
-        <option value="forest">Forest</option>
+        <option value="hero" selected>Anh hùng (Xanh/Đỏ)</option>
+        <option value="rogue">Sát thủ (Tím/Đen)</option>
+        <option value="forest">Rừng (Xanh lá/Nâu)</option>
+        <option value="cyberpunk">Cyberpunk (Neon)</option>
+        <option value="monochrome">Gameboy (Đơn sắc)</option>
       </select>
     </div>
   </div>
   <div class="row">
     <div class="form-group">
-      <label>Độ dày / Độ biến dạng</label>
-      <input type="range" id="spr-density" min="0.4" max="1" step="0.05" value="0.8">
+      <label>Trang bị thêm</label>
+      <select id="spr-accessory">
+        <option value="auto" selected>Tự động (Ngẫu nhiên)</option>
+        <option value="sword">Kiếm</option>
+        <option value="shield">Khiên</option>
+        <option value="staff">Gậy phép</option>
+        <option value="none">Không có</option>
+      </select>
     </div>
     <div class="form-group">
       <label>&nbsp;</label>
@@ -402,7 +405,7 @@ function showToast(msg, type = '') {
   t._timer = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// Seeded Random Number Generator (Mulberry32)
+// Seeded Random Number Generator
 function mulberry32(a) {
   return function() {
     var t = a += 0x6D2B79F5;
@@ -410,6 +413,21 @@ function mulberry32(a) {
     t ^= t + Math.imul(t ^ t >>> 7, t | 61);
     return ((t ^ t >>> 14) >>> 0) / 4294967296;
   }
+}
+
+// Color Helpers
+function hexToRgb(hex) {
+  let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+  return [r, g, b];
+}
+function rgbToHex(r, g, b) {
+  return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
+}
+function shadeColor(hex, percent) {
+  let [r, g, b] = hexToRgb(hex);
+  r = Math.floor(r * (1 + percent)); g = Math.floor(g * (1 + percent)); b = Math.floor(b * (1 + percent));
+  r = Math.min(255, Math.max(0, r)); g = Math.min(255, Math.max(0, g)); b = Math.min(255, Math.max(0, b));
+  return rgbToHex(r, g, b);
 }
 
 // ============================================================
@@ -699,15 +717,14 @@ async function generateSound() {
 $('snd-generate').addEventListener('click', generateSound);
 
 // ============================================================
-// TAB 3: PIXEL SPRITE (UPGRADED V2)
+// TAB 3: PIXEL SPRITE (V3 - ANATOMY ENGINE)
 // ============================================================
 const PALETTES = {
-  gameboy: ['#0f380f', '#306230', '#8bac0f', '#9bbc0f'],
-  nes: ['#000000', '#fcfcfc', '#f8b800', '#d82800', '#00a800', '#0058f8', '#7c5cff'],
-  pico8: ['#000000', '#1D2B53', '#7E2553', '#008751', '#AB5236', '#5F574F', '#C2C3C7', '#FFF1E8', '#FF004D', '#FFA300', '#FFEC27', '#00E436', '#29ADFF', '#83769C', '#FF77A8'],
-  pastel: ['#6b5b95', '#ffb3ba', '#ffdfba', '#ffffba', '#baffc9', '#bae1ff'],
-  cyberpunk: ['#0d0221', '#ff006e', '#fb5607', '#ffbe0b', '#8338ec', '#3a86ff', '#00d4aa'],
-  forest: ['#0b3d2e', '#1e7a4f', '#3db370', '#8ed081', '#d9f2c7', '#5c3a21']
+  hero: { skin: '#f1c27d', hair: '#5c3a21', eye: '#000000', armor: '#4a90e2', trim: '#f5a623', pants: '#34495e', boots: '#8e44ad', outline: '#111111', metal: '#bdc3c7' },
+  rogue: { skin: '#e0ac69', hair: '#ffffff', eye: '#ff0000', armor: '#9b59b6', trim: '#2c3e50', pants: '#2c3e50', boots: '#2c3e50', outline: '#000000', metal: '#95a5a6' },
+  forest: { skin: '#f1c27d', hair: '#d35400', eye: '#000000', armor: '#27ae60', trim: '#8e44ad', pants: '#6d4c41', boots: '#3e2723', outline: '#1b5e20', metal: '#7f8c8d' },
+  cyberpunk: { skin: '#ffb8d0', hair: '#00ffff', eye: '#ff00ff', armor: '#2c3e50', trim: '#f1c40f', pants: '#111111', boots: '#e74c3c', outline: '#000000', metal: '#00d4aa' },
+  monochrome: { skin: '#9bbc0f', hair: '#0f380f', eye: '#0f380f', armor: '#306230', trim: '#8bac0f', pants: '#0f380f', boots: '#306230', outline: '#0f380f', metal: '#8bac0f' }
 };
 
 let currentSpriteSeed = Math.floor(Math.random() * 1000000);
@@ -716,10 +733,9 @@ function generateSprite() {
   const size = parseInt($('spr-size').value);
   const type = $('spr-type').value;
   const paletteName = $('spr-palette').value;
-  const density = parseFloat($('spr-density').value);
-  const palette = PALETTES[paletteName];
-  const mid = Math.ceil(size / 2);
-
+  const accChoice = $('spr-accessory').value;
+  
+  const P = PALETTES[paletteName];
   const rng = mulberry32(currentSpriteSeed);
 
   const canvas = $('spr-canvas');
@@ -728,132 +744,218 @@ function generateSprite() {
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, size, size);
 
-  // Grid states: 0 = empty, 1 = filled, 2 = outline, 3 = highlight
-  let grid = Array(size).fill().map(() => Array(size).fill(0));
+  // Ma trận lưu trữ pixel: 0 = trong suốt, 1 = màu chính (armor), 2 = màu phụ (trim/skin), 3 = tóc, 4 = mắt, 5 = quần, 6 = giày, 7 = vũ khí
+  let mat = Array(size).fill().map(() => Array(size).fill(0));
+  let mid = Math.floor(size / 2);
 
-  // 1. Tạo hình khối cơ sở (chỉ vẽ nửa trái, sau đó lật sang phải)
-  for (let y = 0; y < size; y++) {
-    for (let x = 0; x < mid; x++) {
-      let fill = false;
-      const relX = x / mid; // 0 to 1
-      const relY = y / size; // 0 to 1
+  function setPx(x, y, val, mirror = true) {
+    if (x >= 0 && x < size && y >= 0 && y < size) mat[y][x] = val;
+    if (mirror && size - 1 - x >= 0 && size - 1 - x < size && size - 1 - x !== x) {
+      mat[y][size - 1 - x] = val;
+    }
+  }
 
-      if (type === 'character') {
-        // Tạo hình người: Đầu + Thân
-        const headW = Math.max(2, Math.floor(size * 0.4));
-        const headH = Math.max(2, Math.floor(size * 0.3));
-        const headX = Math.floor((size - headW) / 2);
-        const headY = Math.floor(size * 0.1);
-
-        const bodyW = Math.max(3, Math.floor(size * 0.6));
-        const bodyH = Math.max(3, Math.floor(size * 0.45));
-        const bodyX = Math.floor((size - bodyW) / 2);
-        const bodyY = headY + headH;
-
-        const inHead = (x >= headX && x < headX + headW/2 && y >= headY && y < headY + headH);
-        const inBody = (x >= bodyX && x < bodyX + bodyW/2 && y >= bodyY && y < bodyY + bodyH);
-
-        if (inHead || inBody) {
-          // Độ biến dạng dựa vào thanh trượt density
-          if (rng() < density + 0.2) fill = true;
-        } else {
-          // Thêm tay/chân hoặc gai nhọn ngẫu nhiên
-          if (rng() < 0.1) fill = true;
+  if (type === 'character') {
+    // 1. Đầu & Tóc
+    let headY = Math.floor(size * 0.15);
+    let headH = Math.floor(size * 0.25);
+    let headW = Math.floor(size * 0.25);
+    
+    for (let y = headY; y < headY + headH; y++) {
+      for (let x = mid - headW; x < mid; x++) {
+        setPx(x, y, 2); // Da
+      }
+    }
+    
+    // Tóc (Ngẫu nhiên)
+    let hairStyle = Math.floor(rng() * 3);
+    for (let y = headY; y < headY + Math.floor(headH/2); y++) {
+      for (let x = mid - headW; x < mid; x++) {
+        if (hairStyle === 0 || (hairStyle === 1 && x === mid - headW) || (hairStyle === 2 && y === headY)) {
+          setPx(x, y, 3);
         }
-      } else if (type === 'enemy') {
-        // Quái vật: Hình bầu dục bè ngang
-        const dist = Math.hypot((relX - 0.5) * 0.8, relY - 0.5);
-        if (dist < 0.45 && rng() < density) fill = true;
-      } else if (type === 'item') {
-        // Vật phẩm: Hình viên kim cương
-        const dist = Math.abs(relX - 0.5) + Math.abs(relY - 0.5);
-        if (dist < 0.45 && rng() < density) fill = true;
-      } else if (type === 'tile') {
-        // Ô đất: Nhiễu hoàn toàn (không đối xứng)
-        fill = rng() < density;
-      }
-
-      if (fill) grid[y][x] = 1;
-    }
-  }
-
-  // 2. Lật hình (Đối xứng trái phải)
-  if (type !== 'tile') {
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < Math.floor(size / 2); x++) {
-        grid[y][size - 1 - x] = grid[y][x];
       }
     }
-  }
+    
+    // Mắt
+    let eyeY = headY + Math.floor(headH/2);
+    setPx(mid - 1, eyeY, 4, true); // Mắt trái (đối xứng sang phải)
 
-  // 3. Làm mịn (Xóa các điểm ảnh bị cô lập lẻ loi)
-  if (type !== 'tile') {
-    let newGrid = JSON.parse(JSON.stringify(grid));
+    // 2. Thân (Áo giáp)
+    let bodyY = headY + headH;
+    let bodyH = Math.floor(size * 0.3);
+    let bodyW = Math.floor(size * 0.3);
+    
+    for (let y = bodyY; y < bodyY + bodyH; y++) {
+      let currentW = bodyW;
+      // Nới rộng phần vai
+      if (y < bodyY + Math.floor(bodyH/3)) currentW += 1;
+      for (let x = mid - currentW; x < mid; x++) {
+        setPx(x, y, 1);
+      }
+    }
+
+    // 3. Chân
+    let legY = bodyY + bodyH;
+    let legH = size - legY - Math.floor(size * 0.05); // Chừa viền dưới
+    let legW = Math.floor(size * 0.1);
+    
+    for (let y = legY; y < legY + legH; y++) {
+      for (let x = mid - legW - 2; x < mid - 1; x++) {
+        setPx(x, y, 5); // Quần
+      }
+    }
+    
+    // Giày
+    for (let x = mid - legW - 2; x < mid - 1; x++) {
+      setPx(x, legY + legH - 1, 6);
+    }
+
+    // 4. Trang bị (Vũ khí)
+    let acc = accChoice;
+    if (acc === 'auto') {
+      const opts = ['sword', 'shield', 'staff', 'none'];
+      acc = opts[Math.floor(rng() * opts.length)];
+    }
+    
+    if (acc === 'sword') {
+      let swX = mid + bodyW + 1;
+      let swY = bodyY;
+      for (let y = swY; y < swY + bodyH + 2; y++) {
+        if (swX < size) mat[y][swX] = 7;
+      }
+      if (swX < size) {
+        mat[swY - 1][swX] = 7;
+        mat[swY - 2][swX] = 7;
+      }
+    } else if (acc === 'shield') {
+      let shX = mid - bodyW - 2;
+      let shY = bodyY + 1;
+      for (let y = shY; y < shY + bodyH - 1; y++) {
+        for (let x = shX; x < shX + 3; x++) {
+          if (x >= 0) mat[y][x] = 7;
+        }
+      }
+    } else if (acc === 'staff') {
+      let stX = mid + bodyW + 1;
+      for (let y = bodyY - 2; y < legY + 2; y++) {
+        if (stX < size) mat[y][stX] = 7;
+      }
+      if (stX < size && bodyY - 2 >= 0) {
+        mat[bodyY - 2][stX - 1] = 7;
+        mat[bodyY - 2][stX + 1] = 7;
+        mat[bodyY - 3][stX] = 7;
+      }
+    }
+
+  } else if (type === 'enemy') {
+    // Quái vật
+    let cy = Math.floor(size / 2);
+    let rx = Math.floor(size * 0.4);
+    let ry = Math.floor(size * 0.3);
+    
     for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        if (grid[y][x] === 1) {
-          let neighbors = 0;
-          for (let dy = -1; dy <= 1; dy++) {
-            for (let dx = -1; dx <= 1; dx++) {
-              if (dx === 0 && dy === 0) continue;
-              const ny = y + dy, nx = x + dx;
-              if (ny >= 0 && ny < size && nx >= 0 && nx < size && grid[ny][nx] === 1) neighbors++;
+      for (let x = 0; x < mid; x++) {
+        let dx = (x - mid) / rx;
+        let dy = (y - cy) / ry;
+        if (dx*dx + dy*dy <= 1) {
+          setPx(x, y, 1);
+        }
+      }
+    }
+    // Sừng
+    let hornH = Math.floor(size * 0.15);
+    for(let i=0; i<hornH; i++){
+        setPx(mid - Math.floor(size*0.3) + i, Math.floor(size*0.2) - i, 2);
+    }
+    // Mắt
+    setPx(mid - Math.floor(size*0.15), cy - 2, 4, true);
+    
+  } else if (type === 'item') {
+    // Bình thuốc
+    let w = Math.floor(size*0.4);
+    let h = Math.floor(size*0.5);
+    let top = Math.floor(size*0.3);
+    let left = mid - Math.floor(w/2);
+    
+    for(let y=top; y<top+h; y++){
+        for(let x=left; x<left+w; x++){
+            if(y < top + Math.floor(h*0.2)) {
+                mat[y][x] = 2; // Nút chai
+            } else {
+                mat[y][x] = 1; // Nước thuốc
             }
-          }
-          if (neighbors < 2) newGrid[y][x] = 0; // Cô lập quá thì xóa
         }
-      }
     }
-    grid = newGrid;
+    // Điểm sáng (Highlight) trên bình
+    mat[top + Math.floor(h*0.4)][left+1] = 3;
+    mat[top + Math.floor(h*0.5)][left+1] = 3;
   }
 
-  // 4. Tạo viền (Outline) và Đổ bóng (Shading)
+  // 5. Đổ bóng tự động (Lighting)
+  // Quét từ trên xuống dưới, trái sang phải
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
-      if (grid[y][x] === 1) {
-        let isEdge = false;
-        // Kiểm tra 8 hướng xung quanh
+      if (mat[y][x] !== 0 && mat[y][x] !== 4 && mat[y][x] !== 7) { 
+        // Nếu là cạnh dưới hoặc cạnh phải, đánh dấu là 'bóng' (dùng ID âm để biết là cần làm tối)
+        let isShadow = false;
+        if (y + 1 >= size || mat[y+1][x] === 0) isShadow = true;
+        if (x + 1 >= size || mat[y][x+1] === 0) isShadow = true;
+        
+        // Thêm nhiễu ngẫu nhiên để bề mặt đỡ phẳng
+        if (isShadow && rng() > 0.3) {
+          mat[y][x] = -mat[y][x]; 
+        } else if (rng() > 0.7) {
+          mat[y][x] = -mat[y][x]; // Nhiễu texture
+        }
+      }
+    }
+  }
+
+  // 6. Vẽ viền (Outline) và Render
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      let val = Math.abs(mat[y][x]);
+      
+      if (val === 0) {
+        // Kiểm tra xem có phải viền không (nằm cạnh pixel có màu)
+        let isOutline = false;
         for (let dy = -1; dy <= 1; dy++) {
           for (let dx = -1; dx <= 1; dx++) {
             if (dx === 0 && dy === 0) continue;
-            const ny = y + dy, nx = x + dx;
-            if (ny < 0 || ny >= size || nx < 0 || nx >= size || grid[ny][nx] === 0) {
-              isEdge = true; break;
+            let ny = y + dy, nx = x + dx;
+            if (ny >= 0 && ny < size && nx >= 0 && nx < size && Math.abs(mat[ny][nx]) > 0) {
+              isOutline = true; break;
             }
           }
-          if(isEdge) break;
+          if (isOutline) break;
+        }
+        if (isOutline) {
+          ctx.fillStyle = P.outline;
+          ctx.fillRect(x, y, 1, 1);
+        }
+      } else {
+        // Tô màu
+        let baseColor = P.armor; // Mặc định
+        if (val === 1) baseColor = P.armor;
+        if (val === 2) baseColor = P.skin;
+        if (val === 3) baseColor = P.trim; // Dùng trim cho tóc/highlight
+        if (val === 4) baseColor = P.eye;
+        if (val === 5) baseColor = P.pants;
+        if (val === 6) baseColor = P.boots;
+        if (val === 7) baseColor = P.metal;
+
+        // Nếu mang ID âm (bị đánh dấu bóng)
+        if (mat[y][x] < 0) {
+          baseColor = shadeColor(baseColor, -0.3); // Tối đi 30%
         }
 
-        if (isEdge && type !== 'tile') {
-          grid[y][x] = 2; // Viền đen
-        } else {
-          // Đổ bóng: Sáng ở góc trên trái
-          const mirrorX = x >= mid ? size - 1 - x : x;
-          if (mirrorX < mid * 0.6 && y < size * 0.6) {
-            grid[y][x] = 3; // Điểm sáng (Highlight)
-          }
-        }
+        ctx.fillStyle = baseColor;
+        ctx.fillRect(x, y, 1, 1);
       }
     }
   }
 
-  // 5. Render ra Canvas
-  for (let y = 0; y < size; y++) {
-    for (let x = 0; x < size; x++) {
-      const val = grid[y][x];
-      if (val === 0) continue;
-
-      let color = palette[0];
-      if (val === 1) color = palette[Math.floor(palette.length / 2)]; // Màu nền (Mid tone)
-      if (val === 2) color = palette[0]; // Viền (Darkest)
-      if (val === 3) color = palette[palette.length - 1]; // Sáng (Lightest)
-
-      ctx.fillStyle = color;
-      ctx.fillRect(x, y, 1, 1);
-    }
-  }
-
-  // Hiển thị Seed hiện tại
   $('spr-seed-text').textContent = `Seed: ${currentSpriteSeed}`;
 }
 
