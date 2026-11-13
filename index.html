@@ -320,7 +320,7 @@ canvas {
 <!-- ============ TAB SPRITE ============ -->
 <section id="tab-sprite" class="tab-content">
   <div class="note info">
-    🎨 Tạo sprite pixel art bằng thuật toán đối xứng + <strong>Canvas API</strong> — miễn phí vĩnh viễn, xuất PNG sắc nét.
+    🎨 <strong>Bản nâng cấp V2:</strong> Sprite giờ đây có hình khối nhân vật, viền (outline), và đổ bóng (shading). Thuật toán tự động tạo "Seed" để bạn có thể tạo lại chính xác mẫu sprite mình thích!
   </div>
   <div class="row-3">
     <div class="form-group">
@@ -335,9 +335,9 @@ canvas {
     <div class="form-group">
       <label>Loại</label>
       <select id="spr-type">
-        <option value="character" selected>Nhân vật</option>
-        <option value="enemy">Kẻ thù</option>
-        <option value="item">Vật phẩm</option>
+        <option value="character" selected>Nhân vật (Humanoid)</option>
+        <option value="enemy">Kẻ thù (Beast)</option>
+        <option value="item">Vật phẩm (Gem)</option>
         <option value="tile">Ô đất (Tile)</option>
       </select>
     </div>
@@ -355,8 +355,8 @@ canvas {
   </div>
   <div class="row">
     <div class="form-group">
-      <label>Độ dày (mật độ)</label>
-      <input type="range" id="spr-density" min="0.3" max="1" step="0.05" value="0.7">
+      <label>Độ dày / Độ biến dạng</label>
+      <input type="range" id="spr-density" min="0.4" max="1" step="0.05" value="0.8">
     </div>
     <div class="form-group">
       <label>&nbsp;</label>
@@ -365,6 +365,7 @@ canvas {
   </div>
   <div class="preview">
     <canvas id="spr-canvas" class="sprite-display"></canvas>
+    <div id="spr-seed-text" style="font-size:12px; color:var(--text-dim); margin-top:-10px; font-family:monospace;">Seed: 000000</div>
     <div class="sprite-controls">
       <button class="secondary" id="spr-randomize">🔀 Biến thể khác</button>
       <button class="download" id="spr-download-1x">📥 Tải PNG (gốc)</button>
@@ -401,6 +402,16 @@ function showToast(msg, type = '') {
   t._timer = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
+// Seeded Random Number Generator (Mulberry32)
+function mulberry32(a) {
+  return function() {
+    var t = a += 0x6D2B79F5;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+}
+
 // ============================================================
 // TABS
 // ============================================================
@@ -417,7 +428,6 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 // TAB 1: IMAGE GENERATION
 // ============================================================
 let imgCooldownUntil = 0;
-let lastImageUrl = null;
 
 function updateImageBtn() {
   const btn = $('img-generate');
@@ -455,7 +465,6 @@ async function generateImage() {
 
   imgCooldownUntil = Date.now() + 15000;
   updateImageBtn();
-  lastImageUrl = url;
 
   const preview = $('img-preview');
   preview.innerHTML = '<div class="spinner"></div><div class="preview-empty">Đang tạo ảnh... (có thể mất 10-30 giây)</div>';
@@ -575,11 +584,9 @@ function generateSoundSamples(type, sampleRate, duration, baseFreq) {
         break;
       }
     }
-    // Apply smooth fade-out to prevent clicks
     const fadeOut = Math.min(1, (length - i) / (sampleRate * 0.01));
     data[i] = Math.max(-1, Math.min(1, sample * fadeOut));
   }
-
   return data;
 }
 
@@ -692,68 +699,162 @@ async function generateSound() {
 $('snd-generate').addEventListener('click', generateSound);
 
 // ============================================================
-// TAB 3: PIXEL SPRITE
+// TAB 3: PIXEL SPRITE (UPGRADED V2)
 // ============================================================
 const PALETTES = {
   gameboy: ['#0f380f', '#306230', '#8bac0f', '#9bbc0f'],
   nes: ['#000000', '#fcfcfc', '#f8b800', '#d82800', '#00a800', '#0058f8', '#7c5cff'],
   pico8: ['#000000', '#1D2B53', '#7E2553', '#008751', '#AB5236', '#5F574F', '#C2C3C7', '#FFF1E8', '#FF004D', '#FFA300', '#FFEC27', '#00E436', '#29ADFF', '#83769C', '#FF77A8'],
-  pastel: ['#ffb3ba', '#ffdfba', '#ffffba', '#baffc9', '#bae1ff', '#e0baff'],
+  pastel: ['#6b5b95', '#ffb3ba', '#ffdfba', '#ffffba', '#baffc9', '#bae1ff'],
   cyberpunk: ['#0d0221', '#ff006e', '#fb5607', '#ffbe0b', '#8338ec', '#3a86ff', '#00d4aa'],
   forest: ['#0b3d2e', '#1e7a4f', '#3db370', '#8ed081', '#d9f2c7', '#5c3a21']
 };
 
-function shouldFill(x, y, size, type, densityMult) {
-  const cx = size / 2, cy = size / 2;
-  const distFromCenter = Math.hypot(x - cx, y - cy) / (size / 2);
-  let baseProb = 0.5;
-  switch (type) {
-    case 'character': baseProb = 0.65 - distFromCenter * 0.4; break;
-    case 'enemy': baseProb = 0.6; break;
-    case 'item': baseProb = 0.75 - distFromCenter * 0.7; break;
-    case 'tile': baseProb = 0.5; break;
-  }
-  return Math.random() < baseProb * densityMult;
-}
+let currentSpriteSeed = Math.floor(Math.random() * 1000000);
 
 function generateSprite() {
   const size = parseInt($('spr-size').value);
   const type = $('spr-type').value;
   const paletteName = $('spr-palette').value;
   const density = parseFloat($('spr-density').value);
-
   const palette = PALETTES[paletteName];
+  const mid = Math.ceil(size / 2);
+
+  const rng = mulberry32(currentSpriteSeed);
+
   const canvas = $('spr-canvas');
   canvas.width = size;
   canvas.height = size;
-  canvas.style.width = '256px';
-  canvas.style.height = '256px';
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, size, size);
 
-  const symmetric = type !== 'tile';
+  // Grid states: 0 = empty, 1 = filled, 2 = outline, 3 = highlight
+  let grid = Array(size).fill().map(() => Array(size).fill(0));
 
-  if (symmetric) {
-    const halfW = Math.ceil(size / 2);
+  // 1. Tạo hình khối cơ sở (chỉ vẽ nửa trái, sau đó lật sang phải)
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < mid; x++) {
+      let fill = false;
+      const relX = x / mid; // 0 to 1
+      const relY = y / size; // 0 to 1
+
+      if (type === 'character') {
+        // Tạo hình người: Đầu + Thân
+        const headW = Math.max(2, Math.floor(size * 0.4));
+        const headH = Math.max(2, Math.floor(size * 0.3));
+        const headX = Math.floor((size - headW) / 2);
+        const headY = Math.floor(size * 0.1);
+
+        const bodyW = Math.max(3, Math.floor(size * 0.6));
+        const bodyH = Math.max(3, Math.floor(size * 0.45));
+        const bodyX = Math.floor((size - bodyW) / 2);
+        const bodyY = headY + headH;
+
+        const inHead = (x >= headX && x < headX + headW/2 && y >= headY && y < headY + headH);
+        const inBody = (x >= bodyX && x < bodyX + bodyW/2 && y >= bodyY && y < bodyY + bodyH);
+
+        if (inHead || inBody) {
+          // Độ biến dạng dựa vào thanh trượt density
+          if (rng() < density + 0.2) fill = true;
+        } else {
+          // Thêm tay/chân hoặc gai nhọn ngẫu nhiên
+          if (rng() < 0.1) fill = true;
+        }
+      } else if (type === 'enemy') {
+        // Quái vật: Hình bầu dục bè ngang
+        const dist = Math.hypot((relX - 0.5) * 0.8, relY - 0.5);
+        if (dist < 0.45 && rng() < density) fill = true;
+      } else if (type === 'item') {
+        // Vật phẩm: Hình viên kim cương
+        const dist = Math.abs(relX - 0.5) + Math.abs(relY - 0.5);
+        if (dist < 0.45 && rng() < density) fill = true;
+      } else if (type === 'tile') {
+        // Ô đất: Nhiễu hoàn toàn (không đối xứng)
+        fill = rng() < density;
+      }
+
+      if (fill) grid[y][x] = 1;
+    }
+  }
+
+  // 2. Lật hình (Đối xứng trái phải)
+  if (type !== 'tile') {
     for (let y = 0; y < size; y++) {
-      for (let x = 0; x < halfW; x++) {
-        if (shouldFill(x, y, size, type, density)) {
-          ctx.fillStyle = palette[Math.floor(Math.random() * palette.length)];
-          ctx.fillRect(x, y, 1, 1);
-          if (x !== size - 1 - x) ctx.fillRect(size - 1 - x, y, 1, 1);
+      for (let x = 0; x < Math.floor(size / 2); x++) {
+        grid[y][size - 1 - x] = grid[y][x];
+      }
+    }
+  }
+
+  // 3. Làm mịn (Xóa các điểm ảnh bị cô lập lẻ loi)
+  if (type !== 'tile') {
+    let newGrid = JSON.parse(JSON.stringify(grid));
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        if (grid[y][x] === 1) {
+          let neighbors = 0;
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              if (dx === 0 && dy === 0) continue;
+              const ny = y + dy, nx = x + dx;
+              if (ny >= 0 && ny < size && nx >= 0 && nx < size && grid[ny][nx] === 1) neighbors++;
+            }
+          }
+          if (neighbors < 2) newGrid[y][x] = 0; // Cô lập quá thì xóa
         }
       }
     }
-  } else {
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        if (shouldFill(x, y, size, type, density)) {
-          ctx.fillStyle = palette[Math.floor(Math.random() * palette.length)];
-          ctx.fillRect(x, y, 1, 1);
+    grid = newGrid;
+  }
+
+  // 4. Tạo viền (Outline) và Đổ bóng (Shading)
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      if (grid[y][x] === 1) {
+        let isEdge = false;
+        // Kiểm tra 8 hướng xung quanh
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            if (dx === 0 && dy === 0) continue;
+            const ny = y + dy, nx = x + dx;
+            if (ny < 0 || ny >= size || nx < 0 || nx >= size || grid[ny][nx] === 0) {
+              isEdge = true; break;
+            }
+          }
+          if(isEdge) break;
+        }
+
+        if (isEdge && type !== 'tile') {
+          grid[y][x] = 2; // Viền đen
+        } else {
+          // Đổ bóng: Sáng ở góc trên trái
+          const mirrorX = x >= mid ? size - 1 - x : x;
+          if (mirrorX < mid * 0.6 && y < size * 0.6) {
+            grid[y][x] = 3; // Điểm sáng (Highlight)
+          }
         }
       }
     }
   }
+
+  // 5. Render ra Canvas
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const val = grid[y][x];
+      if (val === 0) continue;
+
+      let color = palette[0];
+      if (val === 1) color = palette[Math.floor(palette.length / 2)]; // Màu nền (Mid tone)
+      if (val === 2) color = palette[0]; // Viền (Darkest)
+      if (val === 3) color = palette[palette.length - 1]; // Sáng (Lightest)
+
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, 1, 1);
+    }
+  }
+
+  // Hiển thị Seed hiện tại
+  $('spr-seed-text').textContent = `Seed: ${currentSpriteSeed}`;
 }
 
 function downloadSprite(scale) {
@@ -776,7 +877,10 @@ function downloadSprite(scale) {
 }
 
 $('spr-generate').addEventListener('click', generateSprite);
-$('spr-randomize').addEventListener('click', generateSprite);
+$('spr-randomize').addEventListener('click', () => {
+  currentSpriteSeed = Math.floor(Math.random() * 1000000);
+  generateSprite();
+});
 $('spr-download-1x').addEventListener('click', () => downloadSprite(1));
 $('spr-download-8x').addEventListener('click', () => downloadSprite(8));
 $('spr-download-16x').addEventListener('click', () => downloadSprite(16));
